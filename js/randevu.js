@@ -2,7 +2,7 @@
    Slotlar Supabase'den okunur; randevu "beklemede" olarak kaydedilir ve
    müşteri WhatsApp'a yönlendirilir. Berber panelden onaylar. */
 
-import { db, BERBERLER, HIZMETLER, iki, tarihAnahtari, tarihYaz } from "./db.js?v=7";
+import { db, BERBERLER, HIZMETLER, iki, tarihAnahtari, tarihYaz } from "./db.js?v=8";
 
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));

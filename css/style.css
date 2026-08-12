@@ -286,6 +286,18 @@ body.no-scroll { overflow: hidden; }
   letter-spacing:.2em; text-transform:uppercase; transition: gap .4s var(--ease), color .4s; }
 .master:hover .go { gap: 14px; color: var(--gold-1); }
 
+/* Dokunmatikte hover yok. Kart ekranın ortasına gelince (.odakta, js/main.js)
+   masaüstündeki hover görünümünü veriyoruz: gri filtre kalkar, görsel
+   asıl rengine döner ve hafifçe parlar. */
+@media (hover: none) {
+  .master.odakta .ph img {
+    transform: scale(1.05);
+    filter: grayscale(0) contrast(1.05) brightness(1.07);
+  }
+  .master.odakta { border-color: var(--line-strong); }
+  .master.odakta .go { gap: 14px; color: var(--gold-1); }
+}
+
 /* ============================================================
    SERVICES
    ============================================================ */

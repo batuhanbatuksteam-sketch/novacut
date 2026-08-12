@@ -48,10 +48,28 @@
     amt: parseFloat(img.dataset.parallax) || 0.12,
   }));
 
+  /* ---- Berber kartları: mobilde odağa gelen kart parlasın ----
+     Masaüstünde bunu :hover yapıyor. Dokunmatikte hover yok, o yüzden
+     kart ekranın ortasına yaklaştığında aynı görünümü veriyoruz. */
+  const dokunmatik = window.matchMedia("(hover: none)").matches;
+  const ustalar = (dokunmatik && !reduce) ? $$(".master") : [];
+
+  function odakGuncelle(vh) {
+    for (const el of ustalar) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) { el.classList.remove("odakta"); continue; }
+      const kartMerkezi = r.top + r.height / 2;
+      // Ekran ortasına yakınsa parlat. Bant biraz geniş ki kaydırırken
+      // kart uzun süre yanık kalsın, göz kırpması gibi olmasın.
+      el.classList.toggle("odakta", Math.abs(kartMerkezi - vh / 2) < vh * 0.34);
+    }
+  }
+
   let ticking = false;
   function frame() {
     const vh = window.innerHeight;
     checkReveals();
+    odakGuncelle(vh);
     if (heroImg) {
       const y = Math.min(window.scrollY, vh);
       heroImg.style.transform = "translate3d(0," + (y * 0.16) + "px,0) scale(1.02)";
