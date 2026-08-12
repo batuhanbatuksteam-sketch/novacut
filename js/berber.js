@@ -3,7 +3,7 @@
    Beklemede olan randevular sarı durur: müşteri WhatsApp mesajını göndermemiş olabilir,
    berber tek dokunuşla arar veya WhatsApp'tan yazar. */
 
-import { db, HIZMETLER, SLOT_DK, iki, tarihAnahtari, telYaz } from "./db.js?v=6";
+import { db, HIZMETLER, SLOT_DK, iki, tarihAnahtari, telYaz } from "./db.js?v=7";
 
 /** "10:30" -> 630 dakika */
 const dkCevir = (s) => {
@@ -86,7 +86,7 @@ $$(".kim").forEach((b) =>
 kimCiz();
 
 // Ekrandaki sürüm damgası: bu yazı görünüyorsa güncel JS çalışıyor demektir.
-const SURUM = "6 · yarım saat";
+const SURUM = "7";
 $("#surum").textContent = SURUM;
 
 $("#gozBtn").addEventListener("click", () => {

@@ -8,7 +8,6 @@
 [hidden] { display: none !important; }
 
 .panel-body { background: var(--bg); min-height: 100svh; }
-.panel-body::before { display: none; }   /* film grain overlay burada gereksiz */
 
 /* ---- Giriş ---- */
 .giris { min-height: 100svh; display: grid; place-items: center; padding: 32px 20px; }

@@ -57,20 +57,10 @@ body.no-scroll { overflow: hidden; }
 
 ::selection { background: rgba(203,168,106,.28); color: var(--gold-1); }
 
-/* Film grain + vignette overlay (self-contained) */
-body::before {
-  content: "";
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 900;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-  opacity: .05; mix-blend-mode: overlay;
-}
-body::after {
-  content: "";
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 899;
-  background: radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(0,0,0,.55) 100%);
-}
+/* Buradaki film grain ve vignette katmanları kaldırıldı.
+   İkisi de position:fixed idi; mobilde adres çubuğu inip kalkarken katmanın
+   yüksekliği görünür alanla uyuşmuyor, sayfanın altında aydınlık bir şerit
+   kalıyordu — ekranda "perde" gibi görünen şey buydu. */
 
 /* ---------- Layout ---------- */
 .wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--pad); }
