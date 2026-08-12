@@ -66,3 +66,14 @@ bağla (adımlar `kurulum.sql` sonunda yazılı).
 JS/CSS bağlantılarında `?v=N` var. Dosyaları değiştirince bu numarayı artır,
 yoksa ziyaretçilerde eski sürüm kalabilir (`berber.js` içindeki `SURUM` sabitiyle
 birlikte güncelle — panelin altında görünür).
+
+## vercel.json hakkında
+
+`source` alanı düz regex değil **path-to-regexp** kabul ediyor; `/(.*\.(html|js|css))`
+gibi bir desen "invalid source pattern" hatası verir. Ayrıca girdilerde yalnızca
+`source`, `headers`, `has`, `missing` alanları geçerli — `comment` gibi bir alan
+eklenirse deploy reddedilir.
+
+Cache-Control kuralı bilerek yok: Vercel statik dosyaları zaten
+`max-age=0, must-revalidate` ile sunup ETag ile doğruluyor, yani eski dosya
+takılma sorunu ayar gerektirmiyor.
