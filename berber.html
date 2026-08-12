@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Berber Paneli — NOVA CUT</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png" />
+<link rel="apple-touch-icon" href="assets/img/logo-mark.png" />
+<meta name="theme-color" content="#0b0a08" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/berber.css?v=6" />
+</head>
+<body class="panel-body">
+
+<!-- ============== GİRİŞ ============== -->
+<section class="giris" id="girisEkrani">
+  <form class="giris-kart" id="girisForm">
+    <img class="giris-logo" src="assets/img/logo-mark.png" alt="Nova Cut" />
+    <h1>Berber Paneli</h1>
+    <p class="giris-alt">Kendini seç, şifreni gir.</p>
+
+    <div class="kim-secim" id="kimSecim">
+      <button class="kim" type="button" data-berber="halil">
+        <img src="assets/img/book-halil.jpg" alt="" />
+        <span>Halil</span>
+      </button>
+      <button class="kim" type="button" data-berber="huseyin">
+        <img src="assets/img/book-huseyin.jpg" alt="" />
+        <span>Hüseyin</span>
+      </button>
+    </div>
+
+    <label for="gSifre">Şifre</label>
+    <div class="sifre-sar">
+      <input id="gSifre" type="password" autocomplete="current-password" placeholder="••••••••" required />
+      <button class="goz" type="button" id="gozBtn" aria-label="Şifreyi göster">Göster</button>
+    </div>
+
+    <div class="panel-hata" id="girisHata"></div>
+    <button class="btn btn-gold" type="submit" id="girisBtn">Giriş Yap</button>
+    <!-- Doğru sürümü çalıştırdığını anlamak için. Eski dosya önbellekteyse
+         burada "sürüm —" yazar, çünkü bunu JS dolduruyor. -->
+    <p class="surum">sürüm <span id="surum">—</span></p>
+  </form>
+</section>
+
+<!-- ============== PANEL ============== -->
+<main class="panel" id="panelEkrani" hidden>
+
+  <header class="panel-ust">
+    <div class="panel-kim">
+      <span class="etiket">Nova Cut</span>
+      <h1 id="berberAdi">—</h1>
+    </div>
+    <button class="cikis" type="button" id="cikisBtn">Çıkış</button>
+  </header>
+
+  <!-- Gün seçimi -->
+  <div class="gun-serit" id="gunSerit"></div>
+
+  <!-- Özet -->
+  <div class="ozet" id="ozet"></div>
+
+  <!-- Randevu listesi -->
+  <section class="liste" id="liste"></section>
+
+  <!-- Saat kapatma -->
+  <section class="kapat-blok">
+    <h2>Telefonla randevu aldın mı?</h2>
+    <p>Yarım saatlik dilime dokun, siteden kimse o dilimi alamasın. Sadece seçili gün için geçerli.</p>
+    <div class="kapat-izgara" id="kapatIzgara"></div>
+  </section>
+
+  <!-- Haftalık çalışma programı -->
+  <section class="program-blok">
+    <div class="program-ust">
+      <div>
+        <h2>Çalışma Saatlerim</h2>
+        <p>Her gün için kendi saatini belirle. Site sadece bu aralıkta randevu verir.</p>
+      </div>
+      <span class="program-durum" id="programDurum"></span>
+    </div>
+
+    <div class="program" id="program"></div>
+
+    <div class="program-alt">
+      <button class="btn btn-gold" type="button" id="programKaydet" disabled>Kaydet</button>
+      <button class="program-geri" type="button" id="programGeri" disabled>Değişiklikleri geri al</button>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="js/berber.js?v=6"></script>
+</body>
+</html>

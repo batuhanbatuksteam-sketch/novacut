@@ -1,0 +1,5 @@
+# Bunlar depoda kalsın ama siteyle birlikte yayınlanmasın.
+sql/
+sunucu.py
+README.md
+*.mov

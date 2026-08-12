@@ -1,0 +1,16 @@
+.DS_Store
+*.log
+
+# Ekran kayıtları — depoya girmesin
+*.mov
+*.mp4
+
+# Şifre / anahtar dosyaları asla depoya girmesin
+*-sifreleri.txt
+*.key
+.env
+.env.*
+
+# Yerel test artıkları
+_*.html
+.vercel

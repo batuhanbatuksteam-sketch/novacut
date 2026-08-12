@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>document.documentElement.classList.add('js');</script>
+<title>Randevu Al — NOVA CUT</title>
+<meta name="description" content="Nova Cut randevu: berberini seç, hizmetini belirle, saatini ayır." />
+<link rel="icon" type="image/png" href="assets/img/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/randevu.css?v=6" />
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<header class="nav scrolled" id="nav">
+  <a class="nav-brand" href="index.html" aria-label="Nova Cut">
+    <img src="assets/img/logo-mark.png" alt="Nova Cut" />
+    <span class="wordmark">NOVA CUT<small>SALOON · H&amp;H</small></span>
+  </a>
+  <nav class="nav-links">
+    <a href="index.html#berberler">Berberler</a>
+    <a href="index.html#hizmetler">Hizmetler</a>
+    <a href="index.html#iletisim">İletişim</a>
+  </nav>
+  <div class="nav-cta">
+    <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Menü"><span></span><span></span></button>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#berberler">Berberler</a>
+  <a href="index.html#hizmetler">Hizmetler</a>
+  <a href="index.html#iletisim">İletişim</a>
+  <a class="gold-text" href="index.html">Ana Sayfa</a>
+</div>
+
+<!-- ============== BOOKING ============== -->
+<main class="booking wrap">
+  <div class="booking-head">
+    <span class="eyebrow center">Randevu</span>
+    <h1>Randevu Oluştur</h1>
+    <p>Dört adımda tamamlayın — berberinizi seçin, hizmeti belirleyin, saatinizi ayırın.</p>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="step-node active" data-step="1"><div class="dot"><span>1</span><svg viewBox="0 0 24 24" fill="none" stroke="#1a1206" stroke-width="2"><path d="M5 12l4 4 10-11"/></svg></div><div class="lbl">Berber</div></div>
+    <div class="step-node" data-step="2"><div class="dot"><span>2</span><svg viewBox="0 0 24 24" fill="none" stroke="#f0dcb0" stroke-width="2"><path d="M5 12l4 4 10-11"/></svg></div><div class="lbl">Hizmet</div></div>
+    <div class="step-node" data-step="3"><div class="dot"><span>3</span><svg viewBox="0 0 24 24" fill="none" stroke="#f0dcb0" stroke-width="2"><path d="M5 12l4 4 10-11"/></svg></div><div class="lbl">Tarih</div></div>
+    <div class="step-node" data-step="4"><div class="dot"><span>4</span><svg viewBox="0 0 24 24" fill="none" stroke="#f0dcb0" stroke-width="2"><path d="M5 12l4 4 10-11"/></svg></div><div class="lbl">Bilgiler</div></div>
+  </div>
+
+  <!-- Live summary -->
+  <div class="summary-bar" id="summaryBar"></div>
+
+  <div class="steps">
+
+    <!-- STEP 1: Berber -->
+    <section class="step active" data-step="1">
+      <div class="step-title"><div class="n">Adım 01</div><h2>Berberini Seç</h2></div>
+      <div class="choice-grid">
+        <button class="choice-card" data-barber="huseyin" type="button">
+          <span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1206" stroke-width="2.4"><path d="M5 12l4 4 10-11"/></svg></span>
+          <span class="ph"><img src="assets/img/book-huseyin.jpg" alt="Hüseyin Uzun" /></span>
+          <span class="info">
+            <span class="role">Berber</span>
+            <h3>Hüseyin Uzun</h3>
+            <span class="pick">Seç <svg width="20" height="8" viewBox="0 0 22 8" fill="none"><path d="M0 4h20M17 1l3 3-3 3" stroke="currentColor" stroke-width="1"/></svg></span>
+          </span>
+        </button>
+
+        <button class="choice-card" data-barber="halil" type="button">
+          <span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1206" stroke-width="2.4"><path d="M5 12l4 4 10-11"/></svg></span>
+          <span class="ph"><img src="assets/img/book-halil.jpg" alt="Halil" /></span>
+          <span class="info">
+            <span class="role">Berber</span>
+            <h3>Halil</h3>
+            <span class="pick">Seç <svg width="20" height="8" viewBox="0 0 22 8" fill="none"><path d="M0 4h20M17 1l3 3-3 3" stroke="currentColor" stroke-width="1"/></svg></span>
+          </span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- STEP 2: Hizmet -->
+    <section class="step" data-step="2">
+      <div class="step-title"><div class="n">Adım 02</div><h2>Hizmetini Seç</h2></div>
+      <div class="service-grid">
+        <button class="service-card" data-service="sac" type="button">
+          <span class="pick">Seç</span>
+          <svg class="sicon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="10" cy="12" r="5"/><circle cx="10" cy="36" r="5"/><path d="M14 15l28 18M14 33l28-18M14 15l14 9"/></svg>
+          <h3>Saç</h3>
+          <p>Kesim ve yüz hattına göre şekillendirme.</p>
+          <div class="price gold-text">₺800</div>
+          <span class="dur">Yaklaşık 30 dakika</span>
+        </button>
+        <button class="service-card" data-service="sakal" type="button">
+          <span class="pick">Seç</span>
+          <svg class="sicon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 6v14a16 16 0 0 0 32 0V6"/><path d="M8 6h32"/><path d="M20 28h8"/></svg>
+          <h3>Sakal</h3>
+          <p>Sakal tasarımı, hatların netleştirilmesi.</p>
+          <div class="price gold-text">₺300</div>
+          <span class="dur">Yaklaşık 30 dakika</span>
+        </button>
+        <button class="service-card" data-service="sacsakal" type="button">
+          <span class="pick">Seç</span>
+          <svg class="sicon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 6v14a16 16 0 0 0 32 0V6"/><path d="M16 24c0 5 3 9 8 9s8-4 8-9"/><path d="M8 6h32"/></svg>
+          <h3>Saç &amp; Sakal</h3>
+          <p>Kesim ve sakal tasarımı bir arada.</p>
+          <div class="price gold-text">₺1000</div>
+          <span class="dur">Yaklaşık 1 saat</span>
+        </button>
+      </div>
+      <div class="wizard-nav single">
+        <button class="btn-back" type="button" data-back><svg width="20" height="8" viewBox="0 0 22 8" fill="none"><path d="M22 4H2M5 1L2 4l3 3" stroke="currentColor" stroke-width="1"/></svg> Geri</button>
+      </div>
+    </section>
+
+    <!-- STEP 3: Tarih & Saat -->
+    <section class="step" data-step="3">
+      <div class="step-title"><div class="n">Adım 03</div><h2>Tarih &amp; Saat</h2></div>
+      <div class="dt-block">
+        <div class="dt-label">Gün Seç</div>
+        <div class="date-scroll" id="dateScroll"></div>
+        <div class="dt-label" style="margin-top:38px">Saat Seç</div>
+        <div class="slot-grid" id="slotGrid"></div>
+        <p class="dt-hint">Uygun olmayan saatler işaretlenmiştir. Randevular yarım saatlik dilimlerle planlanır; saç &amp; sakal iki dilim sürer.</p>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" type="button" data-back><svg width="20" height="8" viewBox="0 0 22 8" fill="none"><path d="M22 4H2M5 1L2 4l3 3" stroke="currentColor" stroke-width="1"/></svg> Geri</button>
+        <button class="btn btn-gold btn-next" type="button" id="toStep4" disabled>Devam</button>
+      </div>
+    </section>
+
+    <!-- STEP 4: Bilgiler -->
+    <section class="step" data-step="4">
+      <div class="step-title"><div class="n">Adım 04</div><h2>İletişim Bilgilerin</h2></div>
+      <div class="form-wrap">
+        <form id="bookForm" novalidate>
+          <div class="form-row">
+            <div class="field" data-field="first">
+              <label for="fName">İsim</label>
+              <input id="fName" name="first" type="text" placeholder="Adınız" autocomplete="given-name" />
+              <div class="err">Lütfen isminizi girin.</div>
+            </div>
+            <div class="field" data-field="last">
+              <label for="fLast">Soyisim</label>
+              <input id="fLast" name="last" type="text" placeholder="Soyadınız" autocomplete="family-name" />
+              <div class="err">Lütfen soyisminizi girin.</div>
+            </div>
+          </div>
+          <div class="field" data-field="phone">
+            <label for="fPhone">Telefon</label>
+            <input id="fPhone" name="phone" type="tel" placeholder="05XX XXX XX XX" autocomplete="tel" inputmode="tel" />
+            <div class="err">Geçerli bir telefon numarası girin.</div>
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" id="waOnay" />
+            <span>Randevumun WhatsApp üzerinden iletilmesini ve berberin bana bu numaradan
+              ulaşmasını kabul ediyorum.</span>
+          </label>
+        </form>
+
+        <div class="wa-uyari">
+          <strong>Son adım WhatsApp'ta tamamlanıyor.</strong>
+          Butona bastığınızda WhatsApp açılacak ve randevu bilgileriniz hazır bir mesaj olarak
+          gelecek. <b>Mesajı göndermeniz gerekiyor</b> — göndermezseniz randevunuz kesinleşmez,
+          berber sizi arayarak teyit ister.
+        </div>
+
+        <div class="form-hata" id="formHata"></div>
+
+        <div class="recap" id="recap"></div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-back" type="button" data-back><svg width="20" height="8" viewBox="0 0 22 8" fill="none"><path d="M22 4H2M5 1L2 4l3 3" stroke="currentColor" stroke-width="1"/></svg> Geri</button>
+        <button class="btn btn-gold btn-next" type="button" id="submitBooking">Randevuyu Tamamla</button>
+      </div>
+    </section>
+
+    <!-- STEP 5: Onay -->
+    <section class="step" data-step="5">
+      <div class="confirm">
+        <div class="seal"><svg viewBox="0 0 48 48" fill="none" stroke="#f0dcb0" stroke-width="2.2"><path d="M13 24l7 7 15-16"/></svg></div>
+        <h2>Saatin Ayrıldı</h2>
+        <p class="msg">WhatsApp açılıyor — randevu mesajını göndermen yeterli.</p>
+        <p class="note">WhatsApp kendiliğinden açılmazsa aşağıdaki butona dokun.
+          Mesaj gönderilmezse berberin seni arayarak teyit eder.</p>
+        <div class="recap" id="confirmRecap"></div>
+        <div class="actions">
+          <a class="btn btn-gold" id="waGonder" href="#" target="_blank" rel="noopener">WhatsApp'tan Gönder</a>
+          <a class="btn btn-ghost" href="index.html">Ana Sayfa</a>
+          <button class="btn btn-ghost" type="button" id="restart">Yeni Randevu</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script src="js/main.js"></script>
+<script type="module" src="js/randevu.js?v=6"></script>
+</body>
+</html>
