@@ -9,21 +9,18 @@
       ]
     },
     {
-      "comment": "HTML ve JS/CSS her zaman tazelensin. Yerelde eski dosyanın önbellekte kalması saatlerimizi aldı; canlıda aynı tuzağa düşmeyelim.",
       "source": "/(.*\\.(html|js|css))",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     },
     {
-      "comment": "Görseller değişmiyor, uzun süre önbelleklensin.",
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "comment": "Berber paneli arama motorlarına düşmesin.",
       "source": "/berber.html",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
