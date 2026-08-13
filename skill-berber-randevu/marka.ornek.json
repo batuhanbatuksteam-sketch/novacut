@@ -1,0 +1,27 @@
+{
+  "marka_ad": "Nova Cut",
+  "marka_slug": "novacut",
+  "app_id": "tr.com.novacut.berber",
+  "app_ad": "Nova Cut Berber",
+
+  "supabase_url": "https://XXXXXXXX.supabase.co",
+  "supabase_ref": "XXXXXXXX",
+  "supabase_anon": "eyJ...",
+
+  "acilis": "10:00",
+  "kapanis": "21:00",
+  "kapali_gunler": [0],
+
+  "berberler": [
+    { "id": "huseyin", "ad": "Hüseyin Uzun", "telefon": "+905315274854", "sifre": "huseyinyonetim" },
+    { "id": "halil",   "ad": "Halil",        "telefon": "+905454851501", "sifre": "halilyonetim" }
+  ],
+
+  "hizmetler": [
+    { "id": "sac",      "ad": "Saç",         "sure_dk": 30, "fiyat": 800 },
+    { "id": "sakal",    "ad": "Sakal",       "sure_dk": 30, "fiyat": 300 },
+    { "id": "sacsakal", "ad": "Saç & Sakal", "sure_dk": 60, "fiyat": 1000 }
+  ],
+
+  "_not": "sifre alanlari yalnizca Supabase Auth kullanicisi olustururken kullanilir; koda hic girmez. ASCII tutun (Turkce karakter klavyeden cikmayabiliyor). kapali_gunler: 0=Pazar."
+}

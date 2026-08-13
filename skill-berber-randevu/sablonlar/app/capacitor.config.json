@@ -1,0 +1,16 @@
+{
+  "appId": "{{APP_ID}}",
+  "appName": "{{APP_AD}}",
+  "webDir": "www",
+  "backgroundColor": "#0b0a08",
+  "ios": { "backgroundColor": "#0b0a08", "contentInset": "never" },
+  "android": { "backgroundColor": "#0b0a08" },
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#0b0a08",
+      "showSpinner": false,
+      "launchAutoHide": true,
+      "launchShowDuration": 600
+    }
+  }
+}
