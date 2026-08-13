@@ -97,11 +97,30 @@ Developer Program üyeliğiyle 1 yıl geçerlidir.
 
 ## Android APK
 
-Android Studio'da **Build → Build Bundle(s)/APK(s) → Build APK(s)**.
-Çıkan dosya: `android/app/build/outputs/apk/debug/app-debug.apk`
+Android Studio **gerekmiyor**. Sadece JDK ve komut satırı SDK'sı yeterli:
 
-Telefona WhatsApp veya kabloyla atıp kurulabilir; "bilinmeyen kaynaklara izin
-ver" gerekir. Uzun ömürlü kullanım için release APK'yı imzalamak daha iyidir.
+```bash
+brew install openjdk@21
+brew install --cask android-commandlinetools
+yes | sdkmanager --licenses
+sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+```
+
+Sonra `app/.env.ornek` içindeki yolları kabuğuna al ve:
+
+```bash
+npm run apk
+```
+
+Çıkan dosya: `android/app/build/outputs/apk/debug/app-debug.apk` (~8 MB)
+
+Telefona WhatsApp, AirDrop veya kabloyla atılıp kurulabilir; Android
+"bilinmeyen kaynaklara izin ver" diye soracak.
+
+**Not:** Bu bir *debug* APK. Çalışır ama Gradle'ın ürettiği geçici anahtarla
+imzalanır ve o anahtar 1 yıl geçerlidir. Uzun ömürlü kullanım için kendi
+keystore'unla imzalanmış release APK üretmek daha doğru — o zaman
+güncellemeleri de aynı imzayla üstüne kurabilirsin.
 
 ## Uygulama kimliği
 

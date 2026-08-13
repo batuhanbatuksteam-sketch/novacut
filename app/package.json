@@ -8,7 +8,8 @@
     "hazirla": "node scripts/hazirla.mjs",
     "senkron": "npm run hazirla && cap sync",
     "ios": "npm run senkron && cap open ios",
-    "android": "npm run senkron && cap open android"
+    "android": "npm run senkron && cap open android",
+    "apk": "npm run senkron && cd android && ./gradlew assembleDebug --console=plain -q && echo '\\nAPK: android/app/build/outputs/apk/debug/app-debug.apk'"
   },
   "dependencies": {
     "@capacitor-firebase/messaging": "^8.4.0",
