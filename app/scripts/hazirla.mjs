@@ -75,7 +75,10 @@ await build({
   format: "esm",
   target: ["es2020"],
   minify: true,
-  external: ["./db.js"],
+  // ./db.js panelle aynı örnek olsun diye dışarıda.
+  // firebase/* ise eklentinin WEB sürümünün bağımlılığı; biz yalnızca native
+  // çalıştığımız için o kod hiç yüklenmiyor, paketi şişirmesin.
+  external: ["./db.js", "firebase/app", "firebase/messaging"],
   outfile: resolve(www, "js/uygulama.js"),
   logLevel: "silent",
 });

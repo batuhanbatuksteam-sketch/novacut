@@ -4,7 +4,10 @@
  * bildirim izni ve cihaz kaydı, durum çubuğu, uygulamaya dönünce tazeleme.
  */
 import { Capacitor } from "@capacitor/core";
-import { PushNotifications } from "@capacitor/push-notifications";
+// Capacitor'ın kendi PushNotifications eklentisi iOS'ta APNs token döndürüyor,
+// Android'de FCM token. Sunucu tarafı FCM ile gönderdiği için iki platformda da
+// FCM token veren Firebase Messaging eklentisi kullanılıyor.
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { App } from "@capacitor/app";
 import { db } from "./db.js";
@@ -43,9 +46,9 @@ let kuruldu = false;
 async function bildirimleriKur() {
   if (kuruldu) return;
 
-  let izin = await PushNotifications.checkPermissions();
-  if (izin.receive === "prompt" || izin.receive === "prompt-with-rationale") {
-    izin = await PushNotifications.requestPermissions();
+  let izin = await FirebaseMessaging.checkPermissions();
+  if (izin.receive !== "granted") {
+    izin = await FirebaseMessaging.requestPermissions();
   }
   if (izin.receive !== "granted") {
     console.warn("bildirim izni verilmedi");
@@ -54,20 +57,18 @@ async function bildirimleriKur() {
 
   kuruldu = true;
 
-  PushNotifications.addListener("registration", (token) => {
-    cihazKaydet(token.value).catch((e) => console.error("cihaz kaydedilemedi:", e));
-  });
-
-  PushNotifications.addListener("registrationError", (e) => {
-    console.error("bildirim kaydı hatası:", e);
+  // Token zamanla yenilenebilir; yenisi gelince üzerine yazıyoruz.
+  await FirebaseMessaging.addListener("tokenReceived", ({ token }) => {
+    cihazKaydet(token).catch((e) => console.error("cihaz kaydedilemedi:", e));
   });
 
   // Bildirime dokununca paneli tazele ki yeni randevu hemen görünsün.
-  PushNotifications.addListener("pushNotificationActionPerformed", () => {
+  await FirebaseMessaging.addListener("notificationActionPerformed", () => {
     location.reload();
   });
 
-  await PushNotifications.register();
+  const { token } = await FirebaseMessaging.getToken();
+  if (token) await cihazKaydet(token);
 }
 
 async function cihazKaydet(token) {

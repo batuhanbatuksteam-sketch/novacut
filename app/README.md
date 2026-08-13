@@ -46,6 +46,11 @@ Android Studio'dan tekrar çalıştır.
 Bildirimler Firebase Cloud Messaging üzerinden gidiyor. FCM, iOS tarafında
 APNs'e kendisi devrediyor; iki ayrı altyapı kurmaya gerek yok.
 
+**Neden `@capacitor-firebase/messaging`:** Capacitor'ın kendi
+`@capacitor/push-notifications` eklentisi Android'de FCM token, iOS'ta ise
+**APNs token** döndürüyor. Sunucu FCM ile gönderdiği için iOS'ta bildirimler
+sessizce ulaşmazdı. Firebase eklentisi iki platformda da FCM token verir.
+
 1. **console.firebase.google.com** → yeni proje: `nova-cut`
 2. **Android uygulaması ekle** → paket adı `tr.com.novacut.berber`
    → `google-services.json` indir → `app/android/app/` içine koy
