@@ -75,10 +75,27 @@ await build({
   format: "esm",
   target: ["es2020"],
   minify: true,
-  // ./db.js panelle aynı örnek olsun diye dışarıda.
-  // firebase/* ise eklentinin WEB sürümünün bağımlılığı; biz yalnızca native
-  // çalıştığımız için o kod hiç yüklenmiyor, paketi şişirmesin.
-  external: ["./db.js", "firebase/app", "firebase/messaging"],
+  // ./db.js panelle aynı örnek olsun diye dışarıda bırakılıyor.
+  external: ["./db.js"],
+  // firebase/messaging, eklentinin WEB sürümünün bağımlılığı. Native'de o kod
+  // hiç çalışmıyor. Daha önce "external" bırakmıştım; o zaman pakette çıplak
+  // bir "firebase/messaging" importu kalıyor ve WebView bunu çözemeyip
+  // "does not resolve to a valid URL" ile tüm modülü düşürüyordu — yani
+  // bildirim kaydı hiç yapılmıyordu. Bu yüzden boş bir modülle karşılıyoruz.
+  plugins: [{
+    name: "firebase-web-bos",
+    setup(b) {
+      b.onResolve({ filter: /^firebase\// }, (a) => ({ path: a.path, namespace: "fb-bos" }));
+      b.onLoad({ filter: /.*/, namespace: "fb-bos" }, () => ({
+        contents: `
+          const yok = () => { throw new Error("web push bu uygulamada kullanılmıyor"); };
+          export const deleteToken = yok, getMessaging = yok, getToken = yok,
+                       onMessage = yok, isSupported = async () => false;
+        `,
+        loader: "js",
+      }));
+    },
+  }],
   outfile: resolve(www, "js/uygulama.js"),
   logLevel: "silent",
 });
