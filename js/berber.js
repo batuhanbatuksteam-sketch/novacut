@@ -481,10 +481,16 @@ $("#programKaydet").addEventListener("click", async () => {
 $("#programGeri").addEventListener("click", programYukle);
 
 /* ---------- açılış ----------
-   Panelde müşteri ad ve telefonları var; telefonu eline geçen herkes
-   girebilmesin diye her açılışta şifre sorulur. Eski oturum varsa kapatılır. */
+   Webde panelde müşteri ad ve telefonları var; linki eline geçen herkes
+   girebilmesin diye her açılışta şifre sorulur.
+
+   Uygulamada (NOVA_NATIVE) oturum korunur: telefonun kendi kilidi zaten var
+   ve berberin gün içinde onlarca kez şifre yazması işkence olurdu. */
 const { data: { session } } = await db.auth.getSession();
-if (session) await db.auth.signOut();
+if (session) {
+  if (window.NOVA_NATIVE) await panelAc();
+  else await db.auth.signOut();
+}
 
 /* Panel açıkken 60 saniyede bir tazele — yeni randevu kendiliğinden düşsün */
 setInterval(() => { if (berberId) yenile(); }, 60000);

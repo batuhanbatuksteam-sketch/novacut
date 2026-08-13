@@ -3,3 +3,5 @@ sql/
 sunucu.py
 README.md
 *.mov
+app/
+supabase/
