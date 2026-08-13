@@ -106,7 +106,7 @@ yes | sdkmanager --licenses
 sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "platform-tools"
 ```
 
-Sonra `app/.env.ornek` içindeki yolları kabuğuna al ve:
+Sonra `app/ortam.sh` içindeki yolları kabuğuna al ve:
 
 ```bash
 npm run apk
