@@ -20,10 +20,22 @@ Dilim uzunluğu **berbere göre** değişir; tek bir sabit yoktur:
   saati istediği uzunlukta açabilir (`18:27 – 18:55` gibi). Site randevu
   saatlerini birebir bu bloklardan üretir.
 
-Bir hizmet tek bloğa sığmıyorsa (Hüseyin'de yarım saatlik iki blok üstüne denk
-gelen saç & sakal gibi) randevu **bitişik blokları** birden kaplar; araya boşluk
-bırakılmışsa o saat verilmez. Karar tek yerde, veritabanındaki `slot_bitisi`
-fonksiyonunda verilir — site ve panel aynı sonucu görür.
+Randevu her zaman **blok sınırında** biter, dakikası dakikasına değil. Bir hizmet
+tek bloğa sığmıyorsa **bitişik blokları** birden kaplar; araya boşluk bırakılmışsa
+o saat verilmez.
+
+"Sığıyor mu" sorusu iki modda farklı ölçülür:
+
+- Izgara modunda ölçü **dakika**. Bloklar zaten eşit uzunlukta olduğu için
+  60 dakikalık saç & sakal tam bir saat eder, iki saat değil.
+- Özel modda ölçü ayrıca **blok sayısı**: saç ve sakal bir blok, saç & sakal iki
+  blok. Berber `18:27 – 18:55` gibi 28 dakikalık bir blok yazdıysa "saçı 28
+  dakikada kesiyorum" demektir; nominal 30 dakikaya bakıp o bloğu kapatmak onun
+  kendi kararını çöpe atmak olurdu. İki ölçüden hangisi önce karşılanırsa randevu
+  orada biter — böylece saatlik bloklar yazdığında saç & sakal iki saat sürmez.
+
+Karar tek yerde, veritabanındaki `slot_bitisi` fonksiyonunda verilir — site ve
+panel aynı sonucu görür.
 
 ## Sayfalar
 

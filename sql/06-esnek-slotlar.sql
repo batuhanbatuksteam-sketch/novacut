@@ -78,7 +78,7 @@ create policy ss_sil on slot_sablon
 -- Bir günün blokları — iki mod da buradan çıkar. Site de panel de aynı
 -- listeyi kullanır ki ekranda görünen saatlerle veritabanı hiç ayrışmasın.
 create or replace function slot_bloklari(p_berber text, p_tarih date)
-returns table(bas timestamptz, bit timestamptz)
+returns table(bas timestamptz, son timestamptz)
 language plpgsql
 stable
 security definer
@@ -126,10 +126,23 @@ $$;
 -- ---------------------------------------------------------------- bitiş saati
 -- Bir bloktan başlayan randevu nerede biter?
 --
--- Randevu blok sınırında biter, dakikası dakikasına değil: 60 dakikalık
--- saç & sakal iki yarım saatlik bloğu birden kaplar; Halil'de 30 dakikalık
--- saç, saatlik bloğun tamamını kaplar. Bloklar bitişik değilse (Hüseyin
--- araya boşluk koymuşsa) zincir kırılır ve o saat verilemez.
+-- Randevu blok sınırında biter, dakikası dakikasına değil. İki mod iki ayrı
+-- soru soruyor:
+--
+--   Izgara modu (Halil) — bloklar zaten eşit uzunlukta, ölçü DAKİKA.
+--   30 dakikalık saç saatlik bloğun tamamını kaplar; 60 dakikalık saç & sakal
+--   da tam bir saat eder, iki saat değil.
+--
+--   Özel mod (Hüseyin) — blok uzunluğunu berber belirliyor. 18:27–18:55 gibi
+--   28 dakikalık bir blok yazdıysa "saçı 28 dakikada kesiyorum" demektir;
+--   nominal 30 dakikaya bakıp o bloğu kapatmak, berberin kendi kararını
+--   çöpe atmak olurdu. Bu yüzden ölçü BLOK SAYISI: saç ve sakal bir blok,
+--   saç & sakal iki blok. Ama berber saatlik bloklar yazdıysa iki blok = iki
+--   saat eder ki bu da fazla; o yüzden iki ölçüden hangisi ÖNCE karşılanırsa
+--   randevu orada biter.
+--
+-- Bloklar bitişik değilse (araya boşluk konmuşsa) zincir kırılır ve o saat
+-- verilmez.
 create or replace function slot_bitisi(
   p_berber  text,
   p_tarih   date,
@@ -143,24 +156,40 @@ security definer
 set search_path = public
 as $$
 declare
-  v_hedef   timestamptz := p_bas + make_interval(mins => p_sure_dk);
+  v_ozel    boolean;
+  v_birim   int;
+  v_gereken int;
+  v_hedef   timestamptz;
   v_son     timestamptz;
+  v_sayi    int := 0;
   v_basladi boolean := false;
   r         record;
 begin
+  select ozel_slot into v_ozel from berberler where id = p_berber;
+  if v_ozel is null then return null; end if;
+
+  -- Hizmetler arasındaki oran: en kısa gerçek hizmet bir blok eder.
+  select min(sure_dk) into v_birim
+  from hizmetler where id not in ('kapali', 'mola');
+  v_birim   := greatest(coalesce(v_birim, 30), 1);
+  v_gereken := greatest(1, ceil(p_sure_dk::numeric / v_birim)::int);
+  v_hedef   := p_bas + make_interval(mins => p_sure_dk);
+
   for r in select * from slot_bloklari(p_berber, p_tarih) loop
     if not v_basladi then
-      if r.bas = p_bas then
-        v_basladi := true;
-        v_son := r.bit;
-        if v_son >= v_hedef then return v_son; end if;
-      end if;
+      if r.bas <> p_bas then continue; end if;
+      v_basladi := true;
     else
       if r.bas <> v_son then return null; end if;   -- boşluk var, zincir kırıldı
-      v_son := r.bit;
-      if v_son >= v_hedef then return v_son; end if;
     end if;
+
+    v_son  := r.son;
+    v_sayi := v_sayi + 1;
+
+    if v_son >= v_hedef then return v_son; end if;
+    if v_ozel and v_sayi >= v_gereken then return v_son; end if;
   end loop;
+
   return null;
 end;
 $$;

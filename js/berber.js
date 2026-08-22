@@ -263,11 +263,12 @@ async function yenile() {
   // Mola bir randevu değil, sadece kapalı bir yer: listede ve özette görünmez.
   gorunenler = randevular.filter((r) => r.hizmet_id !== "mola");
 
+  // slot_bloklari(bas, son) döndürüyor: "bit" Postgres'te tip adı, kolon olamıyor.
   bloklar = (blokCevap.error ? [] : blokCevap.data).map((b) => ({
     bas: new Date(b.bas),
-    bit: new Date(b.bit),
+    bit: new Date(b.son),
     saat: istSaat(b.bas),
-    bitSaat: istSaat(b.bit),
+    bitSaat: istSaat(b.son),
   }));
 
   gunSeridiCiz();
