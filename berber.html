@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=8" />
-<link rel="stylesheet" href="css/berber.css?v=8" />
+<link rel="stylesheet" href="css/style.css?v=9" />
+<link rel="stylesheet" href="css/berber.css?v=9" />
 </head>
 <body class="panel-body">
 
@@ -26,7 +26,7 @@
     <div class="kim-secim" id="kimSecim">
       <button class="kim" type="button" data-berber="halil">
         <img src="assets/img/book-halil.jpg" alt="" />
-        <span>Halil</span>
+        <span>Halil İbrahim</span>
       </button>
       <button class="kim" type="button" data-berber="huseyin">
         <img src="assets/img/book-huseyin.jpg" alt="" />
@@ -70,13 +70,14 @@
 
   <!-- Saat kapatma -->
   <section class="kapat-blok">
-    <h2>Telefonla randevu aldın mı?</h2>
-    <p>Yarım saatlik dilime dokun, siteden kimse o dilimi alamasın. Sadece seçili gün için geçerli.</p>
+    <h2>Saatlerim</h2>
+    <p>Bir bloğa dokun: mola ver ya da telefonla aldığın randevuyu isimle kaydet.
+       Sadece seçili gün için geçerli.</p>
     <div class="kapat-izgara" id="kapatIzgara"></div>
   </section>
 
-  <!-- Haftalık çalışma programı -->
-  <section class="program-blok">
+  <!-- Haftalık çalışma programı — ızgara modundaki berber (Halil) -->
+  <section class="program-blok" id="programBlok">
     <div class="program-ust">
       <div>
         <h2>Çalışma Saatlerim</h2>
@@ -93,8 +94,51 @@
     </div>
   </section>
 
+  <!-- Blok düzeni — saatlerini tek tek yazan berber (Hüseyin) -->
+  <section class="program-blok" id="bloklarBlok" hidden>
+    <div class="program-ust">
+      <div>
+        <h2>Blok Düzenim</h2>
+        <p>Saatler tamamen sana ait. İstersen 18:27 – 18:55 bile yazabilirsin;
+           site sadece burada yazan blokları randevuya açar.</p>
+      </div>
+      <span class="program-durum" id="bloklarDurum"></span>
+    </div>
+
+    <div class="bloklar" id="bloklar"></div>
+
+    <div class="program-alt">
+      <button class="btn btn-gold" type="button" id="bloklarKaydet" disabled>Kaydet</button>
+      <button class="program-geri" type="button" id="bloklarGeri" disabled>Değişiklikleri geri al</button>
+    </div>
+  </section>
+
 </main>
 
-<script type="module" src="js/berber.js?v=8"></script>
+<!-- Bloğa dokununca açılan seçenek sayfası -->
+<div class="sayfa" id="slotSayfa" hidden>
+  <div class="sayfa-arka" data-sayfa-kapat></div>
+  <div class="sayfa-kart" role="dialog" aria-modal="true" aria-labelledby="sayfaSaat">
+    <span class="sayfa-etiket">Seçilen blok</span>
+    <h3 id="sayfaSaat">—</h3>
+
+    <button class="sayfa-secenek" type="button" id="sayfaMola">
+      <b>Mola</b>
+      <small>Burayı kapatır, randevu oluşturmaz. Tekrar dokununca açılır.</small>
+    </button>
+
+    <div class="sayfa-ayrac"><span>veya</span></div>
+
+    <label class="sayfa-label" for="sayfaAd">Telefonla randevu — müşterinin adı</label>
+    <input id="sayfaAd" type="text" placeholder="Örn. Ahmet Yılmaz"
+           autocomplete="off" autocapitalize="words" />
+    <div class="panel-hata" id="sayfaHata"></div>
+    <button class="btn btn-gold" type="button" id="sayfaRandevu">Randevu Olarak Kaydet</button>
+
+    <button class="sayfa-vazgec" type="button" data-sayfa-kapat>Vazgeç</button>
+  </div>
+</div>
+
+<script type="module" src="js/berber.js?v=9"></script>
 </body>
 </html>

@@ -14,3 +14,6 @@
 # Yerel test artıkları
 _*.html
 .vercel
+
+# Supabase CLI artıkları
+supabase/.temp/

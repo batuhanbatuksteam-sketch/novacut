@@ -66,7 +66,7 @@ on conflict (id) do update
 
 insert into berberler (id, ad, telefon) values
   ('huseyin','Hüseyin Uzun','+905315274854'),
-  ('halil',  'Halil',       '+905454851501')
+  ('halil',  'Halil İbrahim Kayar', '+905454851501')
 on conflict (id) do update
   set ad = excluded.ad, telefon = excluded.telefon;
 

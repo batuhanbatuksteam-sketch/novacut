@@ -42,3 +42,20 @@ input, select, textarea { font-size: 16px; }
 
 /* Butona basıldığını parmakla hissettir */
 .ikon-btn:active, .kapat-slot:active:not(:disabled), .btn:active { opacity: .65; }
+
+/* ---- Blok seçenek sayfası ---- */
+/* Klavye açılınca kart ekranın dışına taşmasın; iOS'ta görsel viewport
+   küçülüyor, svh bunu takip ediyor. */
+.sayfa-kart { max-height: 88svh; }
+.sayfa-secenek { min-height: 56px; }
+.sayfa-vazgec  { min-height: 48px; }
+
+/* ---- Blok düzeni ---- */
+/* uygulama.css'teki 16px kuralı (iOS yakınlaşmasın diye) saat kutularını
+   şişiriyor; dar telefonda satır taşmasın diye esnetiyoruz. */
+.b-saat { flex: 1 1 0; min-width: 0; text-align: center; }
+.b-satir { gap: 6px; }
+.b-sil   { min-width: 38px; min-height: 38px; }
+.b-ekle, .b-d-uygula { min-height: 42px; }
+.b-doldur input { flex: 1 1 0; min-width: 0; }
+.b-d-sure { flex: 0 0 74px; }

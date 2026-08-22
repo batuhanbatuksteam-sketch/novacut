@@ -12,8 +12,18 @@ Veri tarafı Supabase (Postgres + Auth), barındırma Vercel.
    "mesaj gelmedi" olarak işaretlenir ve slot kendiliğinden açılır; berber panelden
    arayıp teyit alabilir.
 
-Randevular **yarım saatlik** dilimlerle planlanır: saç ve sakal 1 dilim,
-saç & sakal 2 dilim. Böylece berber bir saatlik aralığa iki müşteri alabilir.
+Dilim uzunluğu **berbere göre** değişir; tek bir sabit yoktur:
+
+- **Halil İbrahim Kayar** — ızgara modu, **birer saatlik** bloklar. Hangi hizmet
+  seçilirse seçilsin randevu bir saat yer kaplar.
+- **Hüseyin Uzun** — özel blok modu. Bloklarını panelden kendi yazar; istediği
+  saati istediği uzunlukta açabilir (`18:27 – 18:55` gibi). Site randevu
+  saatlerini birebir bu bloklardan üretir.
+
+Bir hizmet tek bloğa sığmıyorsa (Hüseyin'de yarım saatlik iki blok üstüne denk
+gelen saç & sakal gibi) randevu **bitişik blokları** birden kaplar; araya boşluk
+bırakılmışsa o saat verilmez. Karar tek yerde, veritabanındaki `slot_bitisi`
+fonksiyonunda verilir — site ve panel aynı sonucu görür.
 
 ## Sayfalar
 
@@ -39,9 +49,12 @@ Supabase SQL Editor'de **sırayla**:
 1. `sql/kurulum.sql` — tablolar, güvenlik kuralları, randevu fonksiyonu
 2. `sql/02-calisma-saatleri.sql` — haftalık program, uygunluk fonksiyonu
 3. `sql/03-yarim-saat.sql` — yarım saatlik slotlar
+4. `sql/04-bildirimler.sql` — cihaz kayıtları, push bildirim metni
+5. `sql/05-bildirim-tetikleyici.sql` — yeni randevuda Edge Function'ı çağırır
+6. `sql/06-esnek-slotlar.sql` — berbere özel blok düzeni, mola kaydı
 
 Sıra önemli: sonraki dosyalar önceki fonksiyonların üstüne yazar.
-`kurulum.sql`'i tekrar çalıştırırsan 02 ve 03'ü de tekrar çalıştır.
+`kurulum.sql`'i tekrar çalıştırırsan sonrakilerin hepsini de tekrar çalıştır.
 
 Ardından Authentication → Users'tan iki kullanıcı açıp `berber_hesap` tablosuna
 bağla (adımlar `kurulum.sql` sonunda yazılı).
@@ -57,7 +70,10 @@ bağla (adımlar `kurulum.sql` sonunda yazılı).
 
 - Tarayıcı tablolara doğrudan erişemez; her şey `gun_uygunluk` ve `randevu_olustur`
   fonksiyonlarından geçer. Müşteri ad/telefonu anon kullanıcıya hiç dönmez.
-- Berber yalnızca kendi randevularını ve kendi çalışma programını görür.
+- Berber yalnızca kendi randevularını, kendi çalışma programını ve kendi blok
+  düzenini görür.
+- Panelin iç kayıtları (`mola`, `kapali`) siteden alınamaz: `randevu_olustur`
+  bu hizmet kimliklerini reddeder.
 - Çakışan randevuyu veritabanı kısıtı (`cakisma_yok`) engeller — kodda değil,
   veritabanında. Aynı anda gelen iki istekte ikincisi reddedilir.
 

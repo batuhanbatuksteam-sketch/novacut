@@ -12,7 +12,10 @@ Uygulamaya özel olan tek şey `kaynak/` altındaki bildirim ve native katman.
 - Günlük randevu listesi, bekleyen / onaylı / "mesaj gelmedi" durumları
 - Müşteriye tek dokunuşla **arama** ve **WhatsApp**
 - Randevu onaylama ve iptal
-- Telefonla gelen randevu için yarım saatlik dilim kapatma
+- Bloğa dokununca çıkan seçenekler: **Mola** (yer kapanır, randevu oluşmaz,
+  tekrar dokununca açılır) veya **telefonla randevu** (müşterinin adıyla kaydedilir)
+- Gün şeridinde randevusu olan günlerin üstünde kırmızı ışık
+- Hüseyin blok saatlerini panelden kendi yazar; Halil saatlik ızgara kullanır
 - Haftalık çalışma saatleri düzenleyici
 - Yeni randevu düşünce **push bildirimi**
 

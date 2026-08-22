@@ -33,12 +33,19 @@ async function baslat() {
   });
 
   /* ---- Uygulamaya geri dönünce randevular tazelensin ----
-     Berber telefonu cebine koyup çıkarınca eski listeyi görmesin. */
+     Berber telefonu cebine koyup çıkarınca eski listeyi görmesin.
+     Sayfayı yeniden yüklemiyoruz: berber blok düzenini yazarken uygulamadan
+     çıkıp dönerse kaydetmediği satırlar durmalı. */
   App.addListener("appStateChange", ({ isActive }) => {
     if (isActive && document.querySelector("#panelEkrani")?.hidden === false) {
-      location.reload();
+      tazele();
     }
   });
+}
+
+/** Panelin kendi tazeleme kancası. Yoksa (panel henüz açılmadıysa) sessiz kal. */
+function tazele() {
+  if (typeof window.NOVA_TAZELE === "function") window.NOVA_TAZELE();
 }
 
 let kuruldu = false;
@@ -64,7 +71,7 @@ async function bildirimleriKur() {
 
   // Bildirime dokununca paneli tazele ki yeni randevu hemen görünsün.
   await FirebaseMessaging.addListener("notificationActionPerformed", () => {
-    location.reload();
+    tazele();
   });
 
   const { token } = await FirebaseMessaging.getToken();

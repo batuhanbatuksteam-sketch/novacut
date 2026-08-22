@@ -12,18 +12,17 @@ export const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export const BERBERLER = {
   huseyin: { ad: "Hüseyin Uzun", tel: "905315274854" },
-  halil:   { ad: "Halil",        tel: "905454851501" },
+  halil:   { ad: "Halil İbrahim Kayar", tel: "905454851501" },
 };
 
-// sure_dk veritabanıyla aynı olmalı: slotlar 30 dakikalık.
-// Saç ve sakal 1 slot, saç & sakal 2 slot birden kaplar.
+// sure_dk veritabanıyla aynı olmalı. Bu, hizmetin gerektirdiği EN AZ süre;
+// randevunun gerçek bitişini berberin blok düzeni belirler (bkz. slot_bitisi).
+// Halil saatlik çalıştığı için 30 dakikalık saç da bir saat yer kaplar.
 export const HIZMETLER = {
   sac:      { ad: "Saç",         fiyat: 800,  sure_dk: 30, sure: "30 dk" },
   sakal:    { ad: "Sakal",       fiyat: 300,  sure_dk: 30, sure: "30 dk" },
   sacsakal: { ad: "Saç & Sakal", fiyat: 1000, sure_dk: 60, sure: "1 saat" },
 };
-
-export const SLOT_DK = 30;
 
 export const GUNLER  = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 export const AYLAR   = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",

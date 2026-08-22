@@ -58,7 +58,8 @@
 .choice-card .badge { position: absolute; top: 14px; left: 14px; z-index: 3; font-size: .55rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 600; color: #1a1206; background: var(--gold-grad); padding: 6px 11px; }
 .choice-card .info { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding: 20px; }
 .choice-card .role { font-size: .62rem; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-2); font-weight: 600; }
-.choice-card h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; margin: 8px 0 12px; }
+.choice-card h3 { font-family: var(--font-script); font-weight: 400; font-size: 2.1rem;
+  color: var(--gold-1); line-height: 1.15; margin: 4px 0 10px; }
 .choice-card .pick { display: inline-flex; align-items: center; gap: 8px; font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); transition: gap .4s var(--ease), color .4s; }
 .choice-card:hover .pick { gap: 13px; color: var(--gold-1); }
 .choice-card.selected { border-color: var(--gold-2); }
@@ -97,11 +98,17 @@
 .date-chip.selected .mo { color: #3a2a10; }
 
 .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; margin-top: 14px; }
-.slot { padding: 15px 8px; text-align: center; background: var(--bg-card); border: 1px solid var(--line); font-size: .95rem; letter-spacing: .04em;
+.slot { padding: 12px 8px; text-align: center; background: var(--bg-card); border: 1px solid var(--line); font-size: .95rem; letter-spacing: .04em;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
   color: var(--ink-soft); transition: all .3s var(--ease); font-variant-numeric: tabular-nums; }
 .slot:hover:not(.disabled) { border-color: var(--gold-2); color: var(--gold-1); }
 .slot.selected { background: var(--gold-grad); border-color: transparent; color: #1a1206; font-weight: 600; }
-.slot.disabled { color: var(--muted-dim); cursor: not-allowed; opacity: .5; text-decoration: line-through; }
+.slot .s-bas { font-variant-numeric: tabular-nums; }
+.slot .s-bit { font-size: .62rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.slot .s-bit::before { content: "→ "; }
+.slot.selected .s-bit { color: #3a2a10; }
+.slot.disabled { color: var(--muted-dim); cursor: not-allowed; opacity: .5; }
+.slot.disabled .s-bas { text-decoration: line-through; }
 .dt-hint { color: var(--muted); font-size: .82rem; margin-top: 30px; text-align: center; }
 
 /* ---- Info form ---- */
@@ -153,7 +160,7 @@
   .form-row { grid-template-columns: 1fr; }
   .wizard-nav .btn { flex: 1; }
   .choice-card .info { padding: 12px; }
-  .choice-card h3 { font-size: 1.02rem; margin: 5px 0 7px; }
+  .choice-card h3 { font-size: 1.5rem; line-height: 1.1; margin: 2px 0 6px; }
   .choice-card .role { font-size: .48rem; letter-spacing: .14em; }
   .choice-card .pick { font-size: .54rem; }
 }

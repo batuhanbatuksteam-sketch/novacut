@@ -2,7 +2,7 @@
    Slotlar Supabase'den okunur; randevu "beklemede" olarak kaydedilir ve
    müşteri WhatsApp'a yönlendirilir. Berber panelden onaylar. */
 
-import { db, BERBERLER, HIZMETLER, iki, tarihAnahtari, tarihYaz } from "./db.js?v=8";
+import { db, BERBERLER, HIZMETLER, iki, tarihAnahtari, tarihYaz } from "./db.js?v=9";
 
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
@@ -14,7 +14,10 @@ const AY_KISA  = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl
 const state = { barber: null, service: null, date: null, time: null,
                 first: "", last: "", phone: "" };
 let current = 1;
-let musaitlik = null;          // Map: "18:00" -> true/false
+// Map: "18:00" -> { musait, biter }. Dilimler artık her berberde aynı uzunlukta
+// değil — Halil saatlik çalışıyor, Hüseyin saatlerini kendi yazıyor — bu yüzden
+// bitiş saatini de veritabanı söylüyor.
+let musaitlik = null;
 let yukleniyor = false;
 let sonWaLinki = "";
 
@@ -34,7 +37,8 @@ async function musaitlikYukle() {
   });
   yukleniyor = false;
   // Bağlantı koparsa saatleri açık göstermek çifte randevu demek — kapalı göster.
-  musaitlik = new Map((error ? [] : data).map((s) => [s.saat, s.musait]));
+  musaitlik = new Map(
+    (error ? [] : data).map((s) => [s.saat, { musait: s.musait, biter: s.biter }]));
 }
 
 /* ---------- render ---------- */
@@ -71,10 +75,13 @@ function renderSlots() {
   if (musaitlik.size === 0) {
     el.innerHTML = '<p class="slot-msg">Saatler alınamadı. Sayfayı yenileyip tekrar deneyin.</p>'; return;
   }
-  for (const [saat, musait] of musaitlik) {
+  for (const [saat, bilgi] of musaitlik) {
     const b = document.createElement("button");
-    b.type = "button"; b.className = "slot"; b.textContent = saat;
-    if (!musait) { b.classList.add("disabled"); b.disabled = true; b.title = "Dolu"; }
+    b.type = "button"; b.className = "slot";
+    // Bitiş saati de yazıyor: müşteri koltuğun ne kadar ayrıldığını görsün.
+    b.innerHTML = '<span class="s-bas">' + saat + '</span>' +
+      (bilgi.biter ? '<span class="s-bit">' + bilgi.biter + '</span>' : "");
+    if (!bilgi.musait) { b.classList.add("disabled"); b.disabled = true; b.title = "Dolu"; }
     if (state.time === saat) b.classList.add("selected");
     b.addEventListener("click", () => {
       if (b.disabled) return;
