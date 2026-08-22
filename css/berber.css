@@ -308,9 +308,17 @@
 /* ============================================================
    Blok seçenek sayfası — bloğa dokununca alttan açılır
    ============================================================ */
-.sayfa { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; }
+/* inset yerine dört kenar ayrı yazılıyor: `inset` kısayolu Chrome 87 ile geldi,
+   eski Android System WebView'da yok sayılıyor. O zaman position:fixed olan bu
+   katman hiç boyut alamıyor ve seçenek sayfası ekranda hiç görünmüyordu —
+   iOS'ta WKWebView güncel olduğu için sorun belli olmuyordu. */
+.sayfa {
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 60; display: flex; align-items: flex-end;
+}
 .sayfa-arka {
-  position: absolute; inset: 0; background: rgba(4,3,2,.78);
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(4,3,2,.78);
   backdrop-filter: blur(3px); animation: sayfa-arka-ac .25s ease;
 }
 .sayfa-kart {
@@ -319,7 +327,7 @@
   padding: 24px 22px calc(24px + env(safe-area-inset-bottom));
   display: flex; flex-direction: column;
   animation: sayfa-ac .3s var(--ease);
-  max-height: 92svh; overflow-y: auto;
+  max-height: 92vh; max-height: 92svh; overflow-y: auto;
 }
 @keyframes sayfa-arka-ac { from { opacity: 0; } }
 @keyframes sayfa-ac { from { transform: translateY(18px); opacity: 0; } }

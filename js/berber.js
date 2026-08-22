@@ -96,7 +96,7 @@ $$(".kim").forEach((b) =>
 kimCiz();
 
 // Ekrandaki sürüm damgası: bu yazı görünüyorsa güncel JS çalışıyor demektir.
-const SURUM = "9";
+const SURUM = "10";
 $("#surum").textContent = SURUM;
 
 $("#gozBtn").addEventListener("click", () => {
@@ -179,6 +179,9 @@ async function panelAc() {
   slotDk    = b?.slot_dk || 30;
 
   $("#berberAdi").textContent = berberAdi;
+  // Sürüm damgası panelde de görünsün: telefonda hangi yapının kurulu olduğunu
+  // çıkış yapmadan anlayabilelim. Eski APK kurulduysa burada eski numara yazar.
+  $(".panel-kim .etiket").textContent = "Nova Cut · s" + SURUM;
   $("#girisEkrani").hidden = true;
   $("#panelEkrani").hidden = false;
 

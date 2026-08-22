@@ -46,7 +46,7 @@ input, select, textarea { font-size: 16px; }
 /* ---- Blok seçenek sayfası ---- */
 /* Klavye açılınca kart ekranın dışına taşmasın; iOS'ta görsel viewport
    küçülüyor, svh bunu takip ediyor. */
-.sayfa-kart { max-height: 88svh; }
+.sayfa-kart { max-height: 88vh; max-height: 88svh; }
 .sayfa-secenek { min-height: 56px; }
 .sayfa-vazgec  { min-height: 48px; }
 
