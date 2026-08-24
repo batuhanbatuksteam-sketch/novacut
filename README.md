@@ -12,30 +12,39 @@ Veri tarafı Supabase (Postgres + Auth), barındırma Vercel.
    "mesaj gelmedi" olarak işaretlenir ve slot kendiliğinden açılır; berber panelden
    arayıp teyit alabilir.
 
-Dilim uzunluğu **berbere göre** değişir; tek bir sabit yoktur:
+Dilim uzunluğu **berbere göre** değişir; tek bir sabit yoktur. İki berber de
+**aynı sistemi** kullanır: saatlerini panelden tek tek kendileri yazarlar
+(`Blok Düzenim`). Aradaki tek fark başlangıç düzenidir:
 
-- **Halil İbrahim Kayar** — ızgara modu, **birer saatlik** bloklar. Hangi hizmet
-  seçilirse seçilsin randevu bir saat yer kaplar.
-- **Hüseyin Uzun** — özel blok modu. Bloklarını panelden kendi yazar; istediği
-  saati istediği uzunlukta açabilir (`18:27 – 18:55` gibi). Site randevu
-  saatlerini birebir bu bloklardan üretir.
+| Berber | Varsayılan blok |
+|---|---|
+| Halil İbrahim Kayar | birer saatlik — 10:00–11:00, 11:00–12:00 … |
+| Hüseyin Uzun | yarımşar saatlik — 10:00–10:30, 10:30–11:00 … |
+
+Varsayılan sadece işe başlarken karşılarına çıkan düzendir; ikisi de istediği
+saati istediği uzunlukta açabilir (`18:27 – 18:55` gibi). Site randevu
+saatlerini birebir bu bloklardan üretir.
 
 Randevu her zaman **blok sınırında** biter, dakikası dakikasına değil. Bir hizmet
 tek bloğa sığmıyorsa **bitişik blokları** birden kaplar; araya boşluk bırakılmışsa
 o saat verilmez.
 
-"Sığıyor mu" sorusu iki modda farklı ölçülür:
+"Sığıyor mu" sorusu iki ölçüyle sorulur ve **hangisi önce karşılanırsa** randevu
+orada biter:
 
-- Izgara modunda ölçü **dakika**. Bloklar zaten eşit uzunlukta olduğu için
-  60 dakikalık saç & sakal tam bir saat eder, iki saat değil.
-- Özel modda ölçü ayrıca **blok sayısı**: saç ve sakal bir blok, saç & sakal iki
-  blok. Berber `18:27 – 18:55` gibi 28 dakikalık bir blok yazdıysa "saçı 28
-  dakikada kesiyorum" demektir; nominal 30 dakikaya bakıp o bloğu kapatmak onun
-  kendi kararını çöpe atmak olurdu. İki ölçüden hangisi önce karşılanırsa randevu
-  orada biter — böylece saatlik bloklar yazdığında saç & sakal iki saat sürmez.
+- **Dakika**: hizmetin süresi doldu mu. Halil'in saatlik bloğunda 60 dakikalık
+  saç & sakal tam bir saat eder, iki saat değil.
+- **Blok sayısı**: saç ve sakal bir blok, saç & sakal iki blok. Berber
+  `18:27 – 18:55` gibi 28 dakikalık bir blok yazdıysa "saçı 28 dakikada
+  kesiyorum" demektir; nominal 30 dakikaya bakıp o bloğu kapatmak onun kendi
+  kararını çöpe atmak olurdu.
 
 Karar tek yerde, veritabanındaki `slot_bitisi` fonksiyonunda verilir — site ve
 panel aynı sonucu görür.
+
+Izgara modu (`ozel_slot = false`) kodda duruyor ama şu an kimse kullanmıyor:
+sisteme yeni bir berber eklenirse blokları tek tek yazmak zorunda kalmadan
+açılış–kapanış verip çalışmaya başlayabilsin diye.
 
 ## Sayfalar
 
@@ -64,6 +73,7 @@ Supabase SQL Editor'de **sırayla**:
 4. `sql/04-bildirimler.sql` — cihaz kayıtları, push bildirim metni
 5. `sql/05-bildirim-tetikleyici.sql` — yeni randevuda Edge Function'ı çağırır
 6. `sql/06-esnek-slotlar.sql` — berbere özel blok düzeni, mola kaydı
+7. `sql/07-halil-manuel.sql` — Halil de kendi bloklarını yazsın (varsayılan 1 saat)
 
 Sıra önemli: sonraki dosyalar önceki fonksiyonların üstüne yazar.
 `kurulum.sql`'i tekrar çalıştırırsan sonrakilerin hepsini de tekrar çalıştır.

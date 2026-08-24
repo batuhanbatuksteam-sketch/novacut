@@ -15,7 +15,8 @@ Uygulamaya özel olan tek şey `kaynak/` altındaki bildirim ve native katman.
 - Bloğa dokununca çıkan seçenekler: **Mola** (yer kapanır, randevu oluşmaz,
   tekrar dokununca açılır) veya **telefonla randevu** (müşterinin adıyla kaydedilir)
 - Gün şeridinde randevusu olan günlerin üstünde kırmızı ışık
-- Hüseyin blok saatlerini panelden kendi yazar; Halil saatlik ızgara kullanır
+- İki berber de blok saatlerini panelden tek tek kendi yazar; varsayılan
+  Halil'de birer saatlik, Hüseyin'de yarımşar saatlik
 - Haftalık çalışma saatleri düzenleyici
 - Yeni randevu düşünce **push bildirimi**
 

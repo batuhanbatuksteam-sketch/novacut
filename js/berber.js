@@ -96,7 +96,7 @@ $$(".kim").forEach((b) =>
 kimCiz();
 
 // Ekrandaki sürüm damgası: bu yazı görünüyorsa güncel JS çalışıyor demektir.
-const SURUM = "10";
+const SURUM = "11";
 $("#surum").textContent = SURUM;
 
 $("#gozBtn").addEventListener("click", () => {
@@ -480,7 +480,11 @@ $("#sayfaRandevu").addEventListener("click", () => {
   blokKapat("kapali", ad);
 });
 
-/* ---------- haftalık çalışma programı (ızgara modu) ---------- */
+/* ---------- haftalık çalışma programı (ızgara modu) ----------
+   Halil ve Hüseyin artık ikisi de kendi bloklarını yazıyor, yani bu bölüm
+   şu an hiçbir berbere görünmüyor. Duruyor çünkü ozel_slot varsayılanı false:
+   sisteme yeni bir berber eklenirse blokları tek tek yazmak zorunda kalmadan
+   açılış–kapanış verip çalışmaya başlayabilsin. */
 const GUN_ADI = ["Pazar", "Pazartesi", "Salı", "Çarşamba",
                  "Perşembe", "Cuma", "Cumartesi"];
 // Hafta Pazartesi'den başlasın, Pazar sona
@@ -701,7 +705,7 @@ function sablonCiz() {
               <span>Hızlı doldur</span>
               <input type="time" class="b-d-bas" value="10:00" aria-label="Başlangıç" />
               <input type="time" class="b-d-bit" value="21:00" aria-label="Bitiş" />
-              <input type="number" class="b-d-sure" value="30" min="5" max="240" step="5" aria-label="Blok süresi (dakika)" />
+              <input type="number" class="b-d-sure" value="${slotDk}" min="5" max="240" step="5" aria-label="Blok süresi (dakika)" />
               <button class="b-d-uygula" type="button" data-doldur="${g.gun}">Uygula</button>
             </div>
           </div>
@@ -737,7 +741,7 @@ function sablonCiz() {
       const son = g.bloklar[g.bloklar.length - 1];
       const bas = son ? dkCevir(son.bit) : 10 * 60;
       g.bloklar.push({ bas: dkYaz(Math.min(bas, 23 * 60)),
-                       bit: dkYaz(Math.min(bas + 30, 24 * 60 - 1)) });
+                       bit: dkYaz(Math.min(bas + slotDk, 24 * 60 - 1)) });
       sablonCiz();
     }));
 
@@ -769,9 +773,9 @@ function sablonCiz() {
       // Bitiş başlangıçtan önce kalmasın.
       if (dkCevir(blok.bit) <= dkCevir(blok.bas)) {
         if (inp.dataset.alan === "bas") {
-          blok.bit = dkYaz(Math.min(dkCevir(blok.bas) + 30, 24 * 60 - 1));
+          blok.bit = dkYaz(Math.min(dkCevir(blok.bas) + slotDk, 24 * 60 - 1));
         } else {
-          blok.bas = dkYaz(Math.max(dkCevir(blok.bit) - 30, 0));
+          blok.bas = dkYaz(Math.max(dkCevir(blok.bit) - slotDk, 0));
         }
       }
       g.bloklar.sort((a, b) => dkCevir(a.bas) - dkCevir(b.bas));
