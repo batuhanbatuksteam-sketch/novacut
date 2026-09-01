@@ -11,6 +11,14 @@ Veri tarafı Supabase (Postgres + Auth), barındırma Vercel.
 4. Berber panelden onaylar. Müşteri mesajı göndermediyse kayıt 30 dakika sonra
    "mesaj gelmedi" olarak işaretlenir ve slot kendiliğinden açılır; berber panelden
    arayıp teyit alabilir.
+5. Onaylandığı anda panel, müşteriye gidecek **onay mesajını** hazırlar ve
+   WhatsApp'ı açar. Sunucudan SMS atacak bir altyapı yok; randevu akışı zaten
+   WhatsApp üzerinden yürüdüğü için onay da oradan gidiyor. Mesajı berber
+   gönderiyor — tek dokunuş, ama gönderdiğini görüyor.
+
+Gün şeridindeki **kırmızı ışık** bir uyarıdır, sayaç değil: yalnızca o günde
+**onay bekleyen** randevu varken yanar, berber onaylayınca söner. Berberin kendi
+yazdığı kayıtlar (telefonla randevu, mola) onaylı doğduğu için hiç yakmaz.
 
 Dilim uzunluğu **berbere göre** değişir; tek bir sabit yoktur. İki berber de
 **aynı sistemi** kullanır: saatlerini panelden tek tek kendileri yazarlar
@@ -74,6 +82,7 @@ Supabase SQL Editor'de **sırayla**:
 5. `sql/05-bildirim-tetikleyici.sql` — yeni randevuda Edge Function'ı çağırır
 6. `sql/06-esnek-slotlar.sql` — berbere özel blok düzeni, mola kaydı
 7. `sql/07-halil-manuel.sql` — Halil de kendi bloklarını yazsın (varsayılan 1 saat)
+8. `sql/08-sac-fiyati.sql` — saç 700 TL
 
 Sıra önemli: sonraki dosyalar önceki fonksiyonların üstüne yazar.
 `kurulum.sql`'i tekrar çalıştırırsan sonrakilerin hepsini de tekrar çalıştır.

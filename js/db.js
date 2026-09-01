@@ -19,7 +19,7 @@ export const BERBERLER = {
 // randevunun gerçek bitişini berberin blok düzeni belirler (bkz. slot_bitisi).
 // Halil saatlik çalıştığı için 30 dakikalık saç da bir saat yer kaplar.
 export const HIZMETLER = {
-  sac:      { ad: "Saç",         fiyat: 800,  sure_dk: 30, sure: "30 dk" },
+  sac:      { ad: "Saç",         fiyat: 700,  sure_dk: 30, sure: "30 dk" },
   sakal:    { ad: "Sakal",       fiyat: 300,  sure_dk: 30, sure: "30 dk" },
   sacsakal: { ad: "Saç & Sakal", fiyat: 1000, sure_dk: 60, sure: "1 saat" },
 };

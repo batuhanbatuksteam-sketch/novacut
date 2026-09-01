@@ -3,7 +3,7 @@
    Beklemede olan randevular sarı durur: müşteri WhatsApp mesajını göndermemiş olabilir,
    berber tek dokunuşla arar veya WhatsApp'tan yazar. */
 
-import { db, HIZMETLER, iki, tarihAnahtari, telYaz } from "./db.js?v=9";
+import { db, HIZMETLER, iki, tarihAnahtari, telYaz } from "./db.js?v=10";
 
 /** "10:30" -> 630 dakika */
 const dkCevir = (s) => {
@@ -96,7 +96,7 @@ $$(".kim").forEach((b) =>
 kimCiz();
 
 // Ekrandaki sürüm damgası: bu yazı görünüyorsa güncel JS çalışıyor demektir.
-const SURUM = "11";
+const SURUM = "12";
 $("#surum").textContent = SURUM;
 
 $("#gozBtn").addEventListener("click", () => {
@@ -217,7 +217,7 @@ function gunSeridiCiz() {
       `<span class="n">${d.getDate()}</span>` +
       `<span class="a">${AY_KISA[d.getMonth()]}</span>` +
       (randevuluGunler.has(anahtar)
-        ? '<span class="isik" aria-label="Bu gün randevun var"></span>' : "");
+        ? '<span class="isik" aria-label="Bu gün onay bekleyen randevun var"></span>' : "");
     b.addEventListener("click", async () => {
       seciliGun = d;
       gunSeridiCiz();
@@ -227,7 +227,10 @@ function gunSeridiCiz() {
   }
 }
 
-/** Şeritteki 10 günün hangilerinde randevu var? Mola sayılmaz. */
+/** Şeritteki 10 günde ONAY BEKLEYEN randevusu olan günler.
+    Işık bir uyarı, sayaç değil: berber randevuyu onaylayınca söner. Berberin
+    kendi yazdığı kayıtlar (telefonla randevu, mola) zaten onaylı doğar, o
+    yüzden hiç yakmazlar. */
 async function gunIsiklariYukle() {
   const bugun = new Date(); bugun.setHours(0, 0, 0, 0);
   const son = new Date(bugun); son.setDate(bugun.getDate() + 10);
@@ -236,8 +239,7 @@ async function gunIsiklariYukle() {
     .from("randevular")
     .select("baslangic")
     .eq("berber_id", berberId)
-    .neq("durum", "iptal")
-    .neq("hizmet_id", "mola")
+    .eq("durum", "beklemede")
     .gte("baslangic", gunAraligi(bugun)[0])
     .lt("baslangic", gunAraligi(son)[0]);
 
@@ -341,7 +343,15 @@ function listeCiz() {
   }).join("");
 
   $$("[data-onay]", el).forEach((b) =>
-    b.addEventListener("click", () => durumDegistir(b.dataset.onay, "onayli")));
+    b.addEventListener("click", async () => {
+      // Kaydı şimdi yakalıyoruz: yenile() sonrası liste yeniden kuruluyor.
+      const kayit = gorunenler.find((x) => x.id === b.dataset.onay);
+      b.disabled = true;
+      const oldu = await durumDegistir(b.dataset.onay, "onayli");
+      if (oldu && kayit && kayit.musteri_tel && kayit.musteri_tel !== "0") {
+        onaySayfaAc(kayit);
+      }
+    }));
 
   $$("[data-iptal]", el).forEach((b) =>
     b.addEventListener("click", () => {
@@ -353,9 +363,48 @@ function listeCiz() {
 
 async function durumDegistir(id, durum) {
   const { error } = await db.from("randevular").update({ durum }).eq("id", id);
-  if (error) { alert("Güncellenemedi, tekrar deneyin."); return; }
+  if (error) { alert("Güncellenemedi, tekrar deneyin."); return false; }
   await yenile();
+  return true;
 }
+
+/* ---------- onay mesajı ---------- */
+/* Randevu onaylanınca müşteri haberdar olmalı. Sunucudan SMS atacak bir altyapı
+   yok; sitedeki randevu akışı da WhatsApp üzerinden yürüdüğü için onay mesajı da
+   oradan gidiyor. Mesajı berber gönderiyor — tek dokunuş, ama gönderdiğini
+   görüyor. */
+const onaySayfa = $("#onaySayfa");
+
+/** '2026-09-03T...' -> '3 Eylül Perşembe' */
+const istTarihYazi = (iso) =>
+  new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul", day: "numeric", month: "long", weekday: "long",
+  }).format(new Date(iso));
+
+function onayMesaji(r) {
+  const hizmet = HIZMETLER[r.hizmet_id]?.ad || r.hizmet_id;
+  return `Merhaba ${r.musteri_ad}, Nova Cut'tan yazıyorum.\n\n` +
+    `${istTarihYazi(r.baslangic)} ${istSaat(r.baslangic)} için oluşturduğunuz ` +
+    `randevunuz onaylanmıştır.\n\n` +
+    `Hizmet: ${hizmet}\n` +
+    `Berber: ${berberAdi}\n\n` +
+    `Görüşmek üzere.`;
+}
+
+function onaySayfaAc(r) {
+  const metin = onayMesaji(r);
+  $("#onayBaslik").textContent =
+    r.musteri_ad + " · " + istSaat(r.baslangic);
+  $("#onayMetin").textContent = metin;
+  $("#onayGonder").href =
+    "https://wa.me/" + r.musteri_tel + "?text=" + encodeURIComponent(metin);
+  onaySayfa.hidden = false;
+}
+
+function onaySayfaKapat() { onaySayfa.hidden = true; }
+
+$$("[data-onay-kapat]").forEach((b) => b.addEventListener("click", onaySayfaKapat));
+$("#onayGonder").addEventListener("click", () => setTimeout(onaySayfaKapat, 400));
 
 /* ---------- blok ızgarası ---------- */
 /* Izgara sabit değil: berberin o güne ait blokları neyse o. Halil'de saatlik
@@ -624,6 +673,31 @@ $("#programGeri").addEventListener("click", programYukle);
 let sablon = [];         // [{gun, kapali, bloklar:[{bas,bit}]}]
 let sablonKayitli = "";
 
+const SAAT_LISTE = Array.from({ length: 24 }, (_, i) => iki(i));
+const DK_LISTE   = Array.from({ length: 60 }, (_, i) => iki(i));
+
+/* Saat seçici neden <input type="time"> değil:
+   iOS'ta bu alana dokununca açılan tekerlek o kadar kısa kalıyordu ki saate
+   basmak mümkün olmuyordu — berber blok saatlerini hiç değiştiremiyordu.
+   <select> iki platformda da tam boy, güvenilir bir seçici açıyor. Dakikayı
+   tek tek listelediği için 18:27 gibi saatler de klavyeye hiç gerek kalmadan
+   seçilebiliyor. */
+function zamanSecici(deger, sinif, veri) {
+  const [sa, dk] = String(deger).split(":");
+  const opt = (liste, secili) => liste
+    .map((v) => `<option value="${v}"${v === secili ? " selected" : ""}>${v}</option>`)
+    .join("");
+  return `<span class="b-zaman ${sinif}">` +
+    `<select class="b-sec" data-bol="s"${veri} aria-label="Saat">${opt(SAAT_LISTE, sa)}</select>` +
+    `<span class="b-iki">:</span>` +
+    `<select class="b-sec" data-bol="d"${veri} aria-label="Dakika">${opt(DK_LISTE, dk)}</select>` +
+    `</span>`;
+}
+
+/** İki açılır listeden "HH:MM" üretir */
+const zamanOku = (sar) =>
+  $('[data-bol="s"]', sar).value + ":" + $('[data-bol="d"]', sar).value;
+
 const sablonImza = (p) =>
   JSON.stringify(p.map((g) => [g.gun, g.kapali, g.bloklar.map((b) => [b.bas, b.bit])]));
 
@@ -665,15 +739,17 @@ function sablonCiz() {
   const el = $("#bloklar");
 
   el.innerHTML = sablon.map((g) => {
-    const satirlar = g.bloklar.map((b, i) => `
+    const satirlar = g.bloklar.map((b, i) => {
+      const veri = ` data-gun="${g.gun}" data-i="${i}"`;
+      return `
       <div class="b-satir">
-        <input type="time" class="b-saat" data-gun="${g.gun}" data-i="${i}" data-alan="bas" value="${b.bas}" />
+        ${zamanSecici(b.bas, "", veri + ' data-alan="bas"')}
         <span class="b-tire">—</span>
-        <input type="time" class="b-saat" data-gun="${g.gun}" data-i="${i}" data-alan="bit" value="${b.bit}" />
+        ${zamanSecici(b.bit, "", veri + ' data-alan="bit"')}
         <span class="b-sure">${Math.max(0, dkCevir(b.bit) - dkCevir(b.bas))} dk</span>
         <button class="b-sil" type="button" data-sil="${g.gun}" data-i="${i}"
                 aria-label="Bloğu sil">✕</button>
-      </div>`).join("");
+      </div>`; }).join("");
 
     return `
       <div class="b-gun ${g.kapali ? "kapali" : ""} ${g.acik ? "acik" : ""}" data-gun="${g.gun}">
@@ -702,9 +778,10 @@ function sablonCiz() {
           <div class="b-araclar">
             <button class="b-ekle" type="button" data-ekle="${g.gun}">+ Blok ekle</button>
             <div class="b-doldur">
-              <span>Hızlı doldur</span>
-              <input type="time" class="b-d-bas" value="10:00" aria-label="Başlangıç" />
-              <input type="time" class="b-d-bit" value="21:00" aria-label="Bitiş" />
+              <span class="b-d-baslik">Hızlı doldur</span>
+              ${zamanSecici("10:00", "b-d-bas", "")}
+              <span class="b-tire">—</span>
+              ${zamanSecici("21:00", "b-d-bit", "")}
               <input type="number" class="b-d-sure" value="${slotDk}" min="5" max="240" step="5" aria-label="Blok süresi (dakika)" />
               <button class="b-d-uygula" type="button" data-doldur="${g.gun}">Uygula</button>
             </div>
@@ -749,8 +826,8 @@ function sablonCiz() {
     b.addEventListener("click", () => {
       const kutu = b.closest(".b-doldur");
       const g = sablon.find((x) => x.gun === +b.dataset.doldur);
-      const bas  = dkCevir($(".b-d-bas", kutu).value || "10:00");
-      const bit  = dkCevir($(".b-d-bit", kutu).value || "21:00");
+      const bas  = dkCevir(zamanOku($(".b-d-bas", kutu)));
+      const bit  = dkCevir(zamanOku($(".b-d-bit", kutu)));
       const sure = Math.max(5, +$(".b-d-sure", kutu).value || 30);
       if (bit <= bas) { alert("Bitiş, başlangıçtan sonra olmalı."); return; }
 
@@ -764,15 +841,16 @@ function sablonCiz() {
       sablonCiz();
     }));
 
-  $$(".b-saat", el).forEach((inp) =>
-    inp.addEventListener("change", () => {
-      const g = sablon.find((x) => x.gun === +inp.dataset.gun);
-      const blok = g.bloklar[+inp.dataset.i];
-      if (!inp.value) { sablonCiz(); return; }
-      blok[inp.dataset.alan] = inp.value;
+  // data-alan yalnızca blok satırlarındaki seçicilerde var; hızlı doldur
+  // seçicileri şablonu değiştirmediği için buraya girmiyor.
+  $$(".b-sec[data-alan]", el).forEach((sec) =>
+    sec.addEventListener("change", () => {
+      const g = sablon.find((x) => x.gun === +sec.dataset.gun);
+      const blok = g.bloklar[+sec.dataset.i];
+      blok[sec.dataset.alan] = zamanOku(sec.closest(".b-zaman"));
       // Bitiş başlangıçtan önce kalmasın.
       if (dkCevir(blok.bit) <= dkCevir(blok.bas)) {
-        if (inp.dataset.alan === "bas") {
+        if (sec.dataset.alan === "bas") {
           blok.bit = dkYaz(Math.min(dkCevir(blok.bas) + slotDk, 24 * 60 - 1));
         } else {
           blok.bas = dkYaz(Math.max(dkCevir(blok.bit) - slotDk, 0));
@@ -871,7 +949,7 @@ if (session) {
    Düzenleyicilere (program / blok düzeni) dokunmaz, bu yüzden kaydedilmemiş
    değişiklikler kaybolmaz. */
 function tazele() {
-  if (berberId && slotSayfa.hidden) yenile();
+  if (berberId && slotSayfa.hidden && onaySayfa.hidden) yenile();
 }
 
 /* Panel açıkken 60 saniyede bir tazele — yeni randevu kendiliğinden düşsün */

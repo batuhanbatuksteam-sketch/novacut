@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=9" />
-<link rel="stylesheet" href="css/berber.css?v=9" />
+<link rel="stylesheet" href="css/style.css?v=10" />
+<link rel="stylesheet" href="css/berber.css?v=10" />
 </head>
 <body class="panel-body">
 
@@ -139,6 +139,26 @@
   </div>
 </div>
 
-<script type="module" src="js/berber.js?v=9"></script>
+<!-- Randevu onaylandıktan sonra müşteriye gidecek bilgi mesajı -->
+<div class="sayfa" id="onaySayfa" hidden>
+  <div class="sayfa-arka" data-onay-kapat></div>
+  <div class="sayfa-kart" role="dialog" aria-modal="true" aria-labelledby="onayBaslik">
+    <span class="sayfa-etiket">Randevu onaylandı</span>
+    <h3 id="onayBaslik">—</h3>
+
+    <p class="onay-not">Müşteriye onay mesajı gönder. WhatsApp açılacak —
+      <b>mesajı göndermen gerekiyor</b>, kendiliğinden gitmez.</p>
+
+    <div class="onay-onizleme" id="onayMetin"></div>
+
+    <a class="btn btn-gold" id="onayGonder" href="#" target="_blank" rel="noopener">
+      WhatsApp'tan Gönder
+    </a>
+
+    <button class="sayfa-vazgec" type="button" data-onay-kapat>Şimdi değil</button>
+  </div>
+</div>
+
+<script type="module" src="js/berber.js?v=10"></script>
 </body>
 </html>

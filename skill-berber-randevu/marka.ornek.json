@@ -18,7 +18,7 @@
   ],
 
   "hizmetler": [
-    { "id": "sac",      "ad": "Saç",         "sure_dk": 30, "fiyat": 800 },
+    { "id": "sac",      "ad": "Saç",         "sure_dk": 30, "fiyat": 700 },
     { "id": "sakal",    "ad": "Sakal",       "sure_dk": 30, "fiyat": 300 },
     { "id": "sacsakal", "ad": "Saç & Sakal", "sure_dk": 60, "fiyat": 1000 }
   ],

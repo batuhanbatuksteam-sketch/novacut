@@ -32,6 +32,12 @@ body {
 /* iOS'ta input'a dokununca sayfanın yakınlaşmasını engeller */
 input, select, textarea { font-size: 16px; }
 
+/* Blok saatlerinin açılır listeleri parmakla rahat seçilsin. iOS'ta input[type=time]
+   tekerleği kullanılamayacak kadar kısa kaldığı için select'e geçildi; bunlar da
+   yeterince yüksek olmazsa aynı sorunun küçüğü yaşanır. */
+.b-sec { min-height: 44px; }
+.b-doldur .b-sec { min-height: 38px; }
+
 /* Dokunma hedefleri parmak için yeterli olsun */
 .ikon-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 .kapat-slot { min-height: 46px; }

@@ -58,7 +58,7 @@ create table if not exists berber_hesap (
 -- ---------------------------------------------------------------- veri
 
 insert into hizmetler (id, ad, sure_dk, fiyat) values
-  ('sac','Saç',40,800),
+  ('sac','Saç',40,700),
   ('sakal','Sakal',20,300),
   ('sacsakal','Saç & Sakal',60,1000)
 on conflict (id) do update
