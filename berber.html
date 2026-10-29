@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=10" />
-<link rel="stylesheet" href="css/berber.css?v=10" />
+<link rel="stylesheet" href="css/style.css?v=11" />
+<link rel="stylesheet" href="css/berber.css?v=11" />
 </head>
 <body class="panel-body">
 
@@ -113,6 +113,30 @@
     </div>
   </section>
 
+  <!-- Hizmet menüsü — iki berberin ortak listesi, siteye buradan yayınlanır -->
+  <section class="program-blok" id="menuBlok">
+    <div class="program-ust">
+      <div>
+        <h2>Hizmetler &amp; Fiyatlar</h2>
+        <p>Fiyatı değiştir, yeni hizmet ekle, sonra <b>Siteye Yayınla</b>'ya bas.
+           Bu liste salonun ortak menüsü — iki berber de aynısını görür.</p>
+      </div>
+      <span class="program-durum" id="menuDurum"></span>
+    </div>
+
+    <div class="menu" id="menu"></div>
+
+    <button class="b-ekle m-ekle" type="button" id="menuEkle">+ Hizmet ekle</button>
+
+    <div class="panel-hata" id="menuHata"></div>
+
+    <div class="program-alt">
+      <button class="btn btn-gold" type="button" id="menuYayinla" disabled>Siteye Yayınla</button>
+      <button class="program-geri" type="button" id="menuGeri" disabled>Değişiklikleri geri al</button>
+    </div>
+    <p class="m-son" id="menuSon"></p>
+  </section>
+
 </main>
 
 <!-- Bloğa dokununca açılan seçenek sayfası -->
@@ -159,6 +183,6 @@
   </div>
 </div>
 
-<script type="module" src="js/berber.js?v=10"></script>
+<script type="module" src="js/berber.js?v=11"></script>
 </body>
 </html>

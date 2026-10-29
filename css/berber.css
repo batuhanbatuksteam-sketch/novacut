@@ -502,3 +502,60 @@
   font-size: .84rem; line-height: 1.6; color: var(--ink-soft);
   white-space: pre-wrap; max-height: 34vh; overflow-y: auto;
 }
+
+/* ============================================================
+   Hizmet menüsü — fiyatlar ve hizmetler, siteye buradan yayınlanır
+   ============================================================ */
+.program-ust p b { color: var(--ink-soft); font-weight: 600; }
+
+.menu { display: flex; flex-direction: column; gap: 10px; }
+
+.m-hizmet {
+  background: var(--bg-card); border: 1px solid var(--line); padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 9px;
+  transition: opacity .3s;
+}
+.m-hizmet.kapali { opacity: .5; }
+
+.m-ust { display: flex; align-items: center; gap: 10px; }
+
+.m-hizmet input[type="text"] {
+  background: rgba(255,255,255,.04); border: 1px solid var(--line);
+  color: var(--ink); font-family: inherit; min-width: 0;
+  transition: border-color .3s;
+}
+.m-hizmet input[type="text"]:focus { outline: none; border-color: var(--gold-2); }
+
+.m-ad { flex: 1 1 auto; font-size: .95rem; font-weight: 600; padding: 9px 11px; }
+.m-hizmet input.m-aciklama { width: 100%; font-size: .8rem; padding: 8px 11px; color: var(--ink-soft); }
+
+/* ₺ işareti kutunun içinde dursun; berber sadece rakamı yazsın */
+.m-fiyat {
+  flex: 0 0 auto; display: inline-flex; align-items: center;
+  border: 1px solid var(--line); background: rgba(255,255,255,.04);
+}
+.m-fiyat:focus-within { border-color: var(--gold-2); }
+.m-fiyat span { color: var(--gold-2); font-size: .9rem; padding-left: 10px; }
+.m-hizmet .m-fiyat input {
+  width: 74px; border: none; background: none; padding: 9px 10px 9px 4px;
+  font-size: .95rem; font-variant-numeric: tabular-nums; color: var(--gold-1);
+}
+
+.m-alt { display: flex; align-items: center; gap: 7px; }
+.m-not { flex: 1 1 auto; font-size: .66rem; color: var(--muted); letter-spacing: .04em; }
+.m-tasi {
+  flex: 0 0 auto; width: 30px; height: 30px; cursor: pointer;
+  background: none; border: 1px solid var(--line); color: var(--muted);
+  font-family: inherit; font-size: .82rem; line-height: 1;
+  transition: color .3s, border-color .3s;
+}
+.m-tasi:hover:not(:disabled) { color: var(--gold-1); border-color: var(--line-strong); }
+.m-tasi:disabled { opacity: .3; cursor: default; }
+
+.m-ekle { margin: 12px 0 4px; }
+#menuHata { margin: 14px 0 0; }
+.m-son { margin: 12px 0 0; font-size: .7rem; color: var(--muted-dim); }
+
+@media (max-width: 420px) {
+  .m-hizmet .m-fiyat input { width: 60px; }
+}

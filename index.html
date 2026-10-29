@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=10" />
+<link rel="stylesheet" href="css/style.css?v=11" />
 </head>
 <body>
 
@@ -162,10 +162,12 @@
         <span class="eyebrow reveal">Hizmetler</span>
         <h2 class="reveal" style="--d:.05s">Koltukta Seni<br />Bekleyenler</h2>
       </div>
-      <p class="lead reveal" style="--d:.15s">Sade bir menü, özenle uygulanan detaylar. Randevu ekranında saç, sakal ya da saç &amp; sakal olarak seçebilirsin.</p>
+      <p class="lead reveal" style="--d:.15s">Sade bir menü, özenle uygulanan detaylar. Randevu ekranında dilediğin hizmeti seçebilirsin.</p>
     </div>
 
-    <div class="svc-list">
+    <!-- Satırlar panelden yayınlanan menüden üretilir (menu.js); buradakiler
+         yalnızca bağlantı kurulamazsa görünen yedek. -->
+    <div class="svc-list" id="hizmetListe">
       <div class="svc-row reveal">
         <span class="idx">01</span>
         <div><h3>Saç</h3><p>Makas ve makine dengesi, yüz hattına göre şekillendirme ve temiz kenar geçişleri.</p></div>
@@ -270,7 +272,8 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=10"></script>
+<script src="js/main.js?v=11"></script>
+<script type="module" src="js/menu.js?v=11"></script>
 <script>addEventListener('load',function(){setTimeout(function(){if(!window.__novaReady){document.querySelectorAll('.reveal,.reveal-fade,.reveal-line,.reveal-clip').forEach(function(e){e.classList.add('is-visible');});var h=document.querySelector('.hero');if(h)h.classList.add('play');}},1500);});</script>
 </body>
 </html>

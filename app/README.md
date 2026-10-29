@@ -18,6 +18,7 @@ Uygulamaya özel olan tek şey `kaynak/` altındaki bildirim ve native katman.
 - İki berber de blok saatlerini panelden tek tek kendi yazar; varsayılan
   Halil'de birer saatlik, Hüseyin'de yarımşar saatlik
 - Haftalık çalışma saatleri düzenleyici
+- Hizmet ve fiyat düzenleyici — **Siteye Yayınla** ile siteye anında yansır
 - Yeni randevu düşünce **push bildirimi**
 
 Webden tek farkı: uygulamada oturum korunur, her açılışta şifre sorulmaz

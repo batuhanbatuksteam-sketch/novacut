@@ -40,6 +40,14 @@
     });
   }
 
+  // Sonradan eklenen öğeler (menu.js'in çizdiği hizmet satırları) da
+  // kaydırınca belirsin.
+  window.NOVA_REVEAL = (els) => {
+    if (reduce) { els.forEach((el) => el.classList.add("is-visible")); return; }
+    pending.push(...els);
+    requestFrame();
+  };
+
   /* ---- Parallax (hero + figures) ---- */
   const heroImg = $("#heroImg");
   const figs = $$("[data-parallax]").map((img) => ({

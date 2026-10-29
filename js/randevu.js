@@ -2,7 +2,8 @@
    Slotlar Supabase'den okunur; randevu "beklemede" olarak kaydedilir ve
    müşteri WhatsApp'a yönlendirilir. Berber panelden onaylar. */
 
-import { db, BERBERLER, HIZMETLER, iki, tarihAnahtari, tarihYaz } from "./db.js?v=10";
+import { db, BERBERLER, HIZMETLER, hizmetleriYukle, sureYaz, kacis,
+         tarihAnahtari, tarihYaz } from "./db.js?v=11";
 
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
@@ -169,13 +170,36 @@ function selectBarber(key, advance) {
 $$(".choice-card").forEach((card) =>
   card.addEventListener("click", () => selectBarber(card.dataset.barber, true)));
 
-$$(".service-card").forEach((card) =>
-  card.addEventListener("click", async () => {
-    state.service = card.dataset.service;
-    $$(".service-card").forEach((c) => c.classList.toggle("selected", c === card));
-    goTo(3);
-    if (state.date) { await musaitlikYukle(); renderSlots(); }
-  }));
+/* ---------- hizmet kartları ----------
+   Menüyü berberler panelden yayınlıyor: fiyat, ad, yeni hizmet. Kartlar ondan
+   üretilir. Tıklama ızgaranın kendisinde dinleniyor, kartlar yeniden
+   çizilince bağlantı kopmasın. */
+const IKONLAR = {
+  sac: '<circle cx="10" cy="12" r="5"/><circle cx="10" cy="36" r="5"/><path d="M14 15l28 18M14 33l28-18M14 15l14 9"/>',
+  sakal: '<path d="M8 6v14a16 16 0 0 0 32 0V6"/><path d="M8 6h32"/><path d="M20 28h8"/>',
+  sacsakal: '<path d="M8 6v14a16 16 0 0 0 32 0V6"/><path d="M16 24c0 5 3 9 8 9s8-4 8-9"/><path d="M8 6h32"/>',
+};
+
+function hizmetleriCiz() {
+  $("#hizmetGrid").innerHTML = Object.entries(HIZMETLER).map(([id, h]) => `
+    <button class="service-card${state.service === id ? " selected" : ""}" data-service="${kacis(id)}" type="button">
+      <span class="pick">Seç</span>
+      <svg class="sicon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">${IKONLAR[id] || IKONLAR.sac}</svg>
+      <h3>${kacis(h.ad)}</h3>
+      ${h.aciklama ? `<p>${kacis(h.aciklama)}</p>` : ""}
+      <div class="price gold-text">${tl(h.fiyat)}</div>
+      <span class="dur">Yaklaşık ${sureYaz(h.sure_dk)}</span>
+    </button>`).join("");
+}
+
+$("#hizmetGrid").addEventListener("click", async (e) => {
+  const card = e.target.closest(".service-card");
+  if (!card || !HIZMETLER[card.dataset.service]) return;
+  state.service = card.dataset.service;
+  $$(".service-card").forEach((c) => c.classList.toggle("selected", c === card));
+  goTo(3);
+  if (state.date) { await musaitlikYukle(); renderSlots(); }
+});
 
 $$("[data-back]").forEach((b) =>
   b.addEventListener("click", () => goTo(Math.max(1, current - 1))));
@@ -307,7 +331,20 @@ $("#restart").addEventListener("click", () => {
   goTo(1);
 });
 
-/* ---------- açılış: ?berber= ile ön seçim ---------- */
+/* ---------- açılış ---------- */
+// Güncel menü gelene kadar HTML'deki yedek kartlar duruyor.
+hizmetleriYukle().then((oldu) => {
+  if (!oldu) return;
+  // Seçili hizmet bu arada siteden kaldırıldıysa seçimi bırak.
+  if (state.service && !HIZMETLER[state.service]) {
+    state.service = null;
+    if (current > 2) goTo(2);
+  }
+  hizmetleriCiz();
+  updateSummary();
+});
+
+/* ?berber= ile ön seçim */
 const pre = new URLSearchParams(location.search).get("berber");
 if (pre && BERBERLER[pre]) {
   selectBarber(pre, false);

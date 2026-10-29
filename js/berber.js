@@ -3,7 +3,8 @@
    Beklemede olan randevular sarı durur: müşteri WhatsApp mesajını göndermemiş olabilir,
    berber tek dokunuşla arar veya WhatsApp'tan yazar. */
 
-import { db, HIZMETLER, iki, tarihAnahtari, telYaz } from "./db.js?v=10";
+import { db, BERBERLER, HIZMETLER, hizmetleriYukle, sureYaz, kacis,
+         iki, tarihAnahtari, telYaz } from "./db.js?v=11";
 
 /** "10:30" -> 630 dakika */
 const dkCevir = (s) => {
@@ -96,7 +97,7 @@ $$(".kim").forEach((b) =>
 kimCiz();
 
 // Ekrandaki sürüm damgası: bu yazı görünüyorsa güncel JS çalışıyor demektir.
-const SURUM = "12";
+const SURUM = "13";
 $("#surum").textContent = SURUM;
 
 $("#gozBtn").addEventListener("click", () => {
@@ -193,6 +194,8 @@ async function panelAc() {
   gunSeridiCiz();
   if (ozelMod) await sablonYukle();
   else         await programYukle();
+  // Randevu listesi hizmet adlarını menüden okuyor; önce menü gelsin.
+  await menuYukle();
   await yenile();
 }
 
@@ -932,6 +935,215 @@ $("#bloklarKaydet").addEventListener("click", async () => {
 });
 
 $("#bloklarGeri").addEventListener("click", sablonYukle);
+
+/* ---------- hizmet menüsü ---------- */
+/* Salonun ortak menüsü: iki berber de aynı listeyi düzenler. Değişiklikler
+   ekranda birikir, "Siteye Yayınla" ile tek seferde yazılır — yarım kalmış
+   bir fiyat müşteriye görünmesin. Yazma işi hizmet_menusu_yayinla'da; sunucu
+   aynı doğrulamayı tekrar yapar. */
+let menu = [];           // [{id, ad, aciklama, sure_dk, fiyat, aktif}] — id null: yeni
+let menuKayitli = "";
+let menuSurum = null;    // son yayın zamanı, sunucunun yazdığı hâliyle (çakışma kontrolü)
+let menuYuklendi = false;
+
+// Randevu süresi blok sayısını belirliyor: 30 dk bir blok, 60 dk iki blok.
+const SURE_SECENEK = [10, 15, 20, 30, 40, 45, 50, 60, 75, 90, 105, 120, 150, 180];
+
+const menuImza = (m) =>
+  JSON.stringify(m.map((h) => [h.id, h.ad.trim(), h.aciklama.trim(), h.sure_dk, h.fiyat, h.aktif]));
+
+const MENU_HATALARI = {
+  MENU_DEGISTI:   "Diğer berber az önce menüyü yayınladı. Güncel menü yüklendi — değişikliğini tekrar yapıp yayınla.",
+  GECERSIZ_AD:    "Hizmet adı 2–40 harf olmalı.",
+  GECERSIZ_FIYAT: "Fiyat geçersiz. Sadece rakam yaz.",
+  GECERSIZ_SURE:  "Süre 5 dakika ile 8 saat arasında olmalı.",
+  AYNI_AD:        "Aynı isimde iki hizmet olamaz.",
+  MENU_BOS:       "Sitede en az bir hizmet açık kalmalı.",
+};
+
+async function menuYukle() {
+  menuYuklendi = await hizmetleriYukle({ hepsi: true });
+  menu = Object.entries(HIZMETLER).map(([id, h]) => ({
+    id, ad: h.ad, aciklama: h.aciklama || "", sure_dk: h.sure_dk,
+    fiyat: h.fiyat, aktif: h.aktif !== false,
+  }));
+
+  // En son yayın: kim, ne zaman. Zamanı sunucunun yazdığı metin olarak
+  // saklıyoruz; Date'e çevirince mikrosaniye düşer ve çakışma kontrolü şaşar.
+  const son = Object.values(HIZMETLER)
+    .filter((h) => h.guncellendi)
+    .sort((a, b) => new Date(b.guncellendi) - new Date(a.guncellendi))[0];
+  menuSurum = son?.guncellendi || null;
+  $("#menuSon").textContent = son
+    ? "Son yayın: " + new Intl.DateTimeFormat("tr-TR", {
+        timeZone: "Europe/Istanbul", day: "numeric", month: "long",
+        hour: "2-digit", minute: "2-digit",
+      }).format(new Date(son.guncellendi)) +
+      (son.guncelleyen ? " · " + (BERBERLER[son.guncelleyen]?.ad || son.guncelleyen) : "")
+    : "";
+
+  menuKayitli = menuImza(menu);
+  hataYaz($("#menuHata"), menuYuklendi ? "" :
+    "Menü yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.");
+  menuCiz();
+}
+
+function sureSecimi(deger, i) {
+  const liste = SURE_SECENEK.includes(deger) ? SURE_SECENEK
+              : [...SURE_SECENEK, deger].sort((a, b) => a - b);
+  return `<select class="p-sec m-sure" data-i="${i}" aria-label="Süre">` +
+    liste.map((d) => `<option value="${d}"${d === deger ? " selected" : ""}>${sureYaz(d)}</option>`).join("") +
+    `</select>`;
+}
+
+function menuCiz() {
+  const el = $("#menu");
+
+  el.innerHTML = menu.map((h, i) => `
+    <div class="m-hizmet ${h.aktif ? "" : "kapali"}">
+      <div class="m-ust">
+        <input class="m-ad" type="text" value="${kacis(h.ad)}" data-i="${i}" data-alan="ad"
+               maxlength="40" placeholder="Hizmet adı" aria-label="Hizmet adı" />
+        <label class="m-fiyat">
+          <span>₺</span>
+          <input type="text" inputmode="numeric" value="${h.fiyat}" data-i="${i}" data-alan="fiyat"
+                 maxlength="6" aria-label="${kacis(h.ad)} fiyatı" />
+        </label>
+        <button class="p-anahtar ${h.aktif ? "acik" : ""}" type="button" data-maktif="${i}"
+                aria-label="${kacis(h.ad)} ${h.aktif ? "siteden kaldır" : "sitede göster"}">
+          <span class="p-topuz"></span>
+        </button>
+      </div>
+      <input class="m-aciklama" type="text" value="${kacis(h.aciklama)}" data-i="${i}" data-alan="aciklama"
+             maxlength="200" placeholder="Kısa açıklama (isteğe bağlı)" aria-label="Açıklama" />
+      <div class="m-alt">
+        ${sureSecimi(h.sure_dk, i)}
+        <span class="m-not">${!h.aktif ? "Sitede görünmüyor"
+                              : h.id ? "" : "Yeni — yayınlayınca sitede çıkar"}</span>
+        <button class="m-tasi" type="button" data-yukari="${i}" ${i === 0 ? "disabled" : ""}
+                aria-label="Yukarı taşı">↑</button>
+        <button class="m-tasi" type="button" data-asagi="${i}" ${i === menu.length - 1 ? "disabled" : ""}
+                aria-label="Aşağı taşı">↓</button>
+        ${h.id ? "" : `<button class="b-sil" type="button" data-msil="${i}" aria-label="Hizmeti sil">✕</button>`}
+      </div>
+    </div>`).join("");
+
+  // Yazarken yeniden çizmiyoruz: imleç kutudan düşerdi.
+  $$("input[data-alan]", el).forEach((inp) =>
+    inp.addEventListener("input", () => {
+      const h = menu[+inp.dataset.i];
+      if (inp.dataset.alan === "fiyat") {
+        const temiz = inp.value.replace(/\D/g, "").slice(0, 6);
+        if (temiz !== inp.value) inp.value = temiz;
+        h.fiyat = temiz === "" ? "" : +temiz;
+      } else {
+        h[inp.dataset.alan] = inp.value;
+      }
+      menuDurumCiz();
+    }));
+
+  $$(".m-sure", el).forEach((sec) =>
+    sec.addEventListener("change", () => {
+      menu[+sec.dataset.i].sure_dk = +sec.value;
+      menuDurumCiz();
+    }));
+
+  $$("[data-maktif]", el).forEach((b) =>
+    b.addEventListener("click", () => {
+      const h = menu[+b.dataset.maktif];
+      h.aktif = !h.aktif;
+      menuCiz();
+    }));
+
+  const tasi = (i, j) => {
+    [menu[i], menu[j]] = [menu[j], menu[i]];
+    menuCiz();
+  };
+  $$("[data-yukari]", el).forEach((b) =>
+    b.addEventListener("click", () => tasi(+b.dataset.yukari, +b.dataset.yukari - 1)));
+  $$("[data-asagi]", el).forEach((b) =>
+    b.addEventListener("click", () => tasi(+b.dataset.asagi, +b.dataset.asagi + 1)));
+
+  // Yayınlanmış hizmet silinmez (eski randevular ona bağlı), sadece kapatılır.
+  $$("[data-msil]", el).forEach((b) =>
+    b.addEventListener("click", () => {
+      menu.splice(+b.dataset.msil, 1);
+      menuCiz();
+    }));
+
+  menuDurumCiz();
+}
+
+function menuDurumCiz() {
+  const degisti = menuImza(menu) !== menuKayitli;
+  $("#menuYayinla").disabled = !degisti || !menuYuklendi;
+  $("#menuGeri").disabled = !degisti;
+  const d = $("#menuDurum");
+  d.textContent = degisti ? "Yayınlanmadı" : "Sitede";
+  d.className = "program-durum" + (degisti ? " bekliyor" : "");
+}
+
+$("#menuEkle").addEventListener("click", () => {
+  menu.push({ id: null, ad: "", aciklama: "", sure_dk: 30, fiyat: "", aktif: true });
+  menuCiz();
+  const kutular = $$("#menu .m-ad");
+  kutular[kutular.length - 1].focus();
+});
+
+/** Yayınlamadan önce: sunucu da bakıyor ama berber sebebi hemen görsün. */
+function menuDogrula() {
+  const adlar = new Set();
+  for (const h of menu) {
+    const ad = h.ad.trim();
+    if (ad.length < 2) return "Her hizmetin bir adı olmalı.";
+    if (h.fiyat === "") return `${ad}: fiyat yazılmamış.`;
+    if (h.aktif) {
+      const k = ad.toLocaleLowerCase("tr-TR");
+      if (adlar.has(k)) return `"${ad}" adında iki hizmet var.`;
+      adlar.add(k);
+    }
+  }
+  if (!menu.some((h) => h.aktif)) return MENU_HATALARI.MENU_BOS;
+  return null;
+}
+
+$("#menuYayinla").addEventListener("click", async () => {
+  const kutu = $("#menuHata");
+  const sorun = menuDogrula();
+  hataYaz(kutu, sorun);
+  if (sorun) return;
+
+  const btn = $("#menuYayinla");
+  btn.disabled = true; btn.textContent = "Yayınlanıyor…";
+
+  const { error } = await db.rpc("hizmet_menusu_yayinla", {
+    p_liste: menu.map((h) => ({
+      id: h.id, ad: h.ad.trim(), aciklama: h.aciklama.trim(),
+      sure_dk: h.sure_dk, fiyat: h.fiyat, aktif: h.aktif,
+    })),
+    p_beklenen: menuSurum,
+  });
+
+  btn.textContent = "Siteye Yayınla";
+
+  if (error) {
+    const kod = Object.keys(MENU_HATALARI).find((k) => error.message.includes(k));
+    if (kod === "MENU_DEGISTI") await menuYukle();
+    else btn.disabled = false;
+    hataYaz(kutu, kod ? MENU_HATALARI[kod] : "Yayınlanamadı: " + error.message);
+    return;
+  }
+
+  await menuYukle();
+  const d = $("#menuDurum");
+  d.textContent = "Yayınlandı ✓";
+  listeCiz();              // randevu kartlarındaki hizmet adları da güncellensin
+});
+
+$("#menuGeri").addEventListener("click", () => {
+  hataYaz($("#menuHata"), "");
+  menuYukle();
+});
 
 /* ---------- açılış ----------
    Webde panelde müşteri ad ve telefonları var; linki eline geçen herkes

@@ -54,6 +54,26 @@ Izgara modu (`ozel_slot = false`) kodda duruyor ama şu an kimse kullanmıyor:
 sisteme yeni bir berber eklenirse blokları tek tek yazmak zorunda kalmadan
 açılış–kapanış verip çalışmaya başlayabilsin diye.
 
+## Hizmetler ve fiyatlar
+
+Menü veritabanında durur, berberler panelin en altındaki **Hizmetler & Fiyatlar**
+bölümünden yönetir: fiyat ve süre değiştirir, yeni hizmet ekler, sırayı değiştirir,
+bir hizmeti siteden kaldırır. Değişiklikler ekranda birikir; **Siteye Yayınla**'ya
+basınca ana sayfadaki liste ve randevu ekranındaki kartlar anında güncellenir.
+
+- Menü salonun **ortak** menüsüdür; iki berber de aynı listeyi görür.
+- İki berber aynı anda yayınlarsa ikincisi reddedilir ve güncel menüyü görür —
+  biri ötekinin değişikliğini farkında olmadan ezemez.
+- Yayınlanmış hizmet silinmez, kapatılır: eski randevular ona bağlı.
+- Yazma yalnızca `hizmet_menusu_yayinla` fonksiyonundan geçer; ad, fiyat ve süre
+  sunucuda da doğrulanır, panelin iç kayıtlarına (`mola`, `kapali`) dokunulamaz.
+- Blok hesabında birim sabit **30 dakika**dır (saç bir blok, saç & sakal iki blok).
+  Önceden en kısa hizmet birim sayılıyordu; 15 dakikalık bir hizmet eklenince
+  saç iki blok sayılmasın diye sabitlendi.
+
+`index.html` ve `randevu.html` içindeki hizmet satırları yalnızca yedektir:
+bağlantı kurulamazsa görünürler.
+
 ## Sayfalar
 
 | Dosya | Ne |
@@ -83,6 +103,7 @@ Supabase SQL Editor'de **sırayla**:
 6. `sql/06-esnek-slotlar.sql` — berbere özel blok düzeni, mola kaydı
 7. `sql/07-halil-manuel.sql` — Halil de kendi bloklarını yazsın (varsayılan 1 saat)
 8. `sql/08-sac-fiyati.sql` — saç 700 TL
+9. `sql/09-hizmet-menusu.sql` — hizmet menüsü panelden yönetilir, siteye yayınlanır
 
 Sıra önemli: sonraki dosyalar önceki fonksiyonların üstüne yazar.
 `kurulum.sql`'i tekrar çalıştırırsan sonrakilerin hepsini de tekrar çalıştır.
@@ -92,7 +113,8 @@ bağla (adımlar `kurulum.sql` sonunda yazılı).
 
 ## Ayarlar
 
-- `js/db.js` — Supabase URL ve **anon** anahtarı, berber telefonları, hizmet süreleri.
+- `js/db.js` — Supabase URL ve **anon** anahtarı, berber telefonları, yedek hizmet menüsü
+  (asıl menü veritabanında, panelden yönetilir).
   anon anahtarı gizli değildir; erişim veritabanındaki RLS kurallarıyla kısıtlanır.
   `service_role` anahtarı bu depoda hiçbir yerde kullanılmaz.
 - Berber şifreleri Supabase Auth'ta tutulur, kodda yer almaz.
